@@ -1,0 +1,24 @@
+<Project>
+  <PropertyGroup>
+    <!-- Use C# 9 for all projects -->
+    <LangVersion>9.0</LangVersion>
+
+    <!-- Enable nullables -->
+    <Nullable>enable</Nullable>
+
+    <!-- Disable certain warnings -->
+    <NoWarn>CS1591;</NoWarn>
+    
+    <!-- If no Configuration is provided we default to debug -->
+    <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
+    <!-- SolutionDir is not defined when building projects explicitly -->
+    <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
+    <!-- Output paths -->
+    <BaseIntermediateOutputPath>$(SolutionDir)\artifacts\obj\$(MSBuildProjectName)\$(Configuration)\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(IntermediateOutputPath)</MSBuildProjectExtensionsPath>
+    <OutputPath>$(SolutionDir)\artifacts\bin\$(MSBuildProjectName)\$(Configuration)\</OutputPath>
+    <!--<OutDir>$(OutputPath)</OutDir>-->
+    <DocumentationFile>$(SolutionDir)artifacts\doc\$(MSBuildProjectName)\$(Configuration)\doc.xml</DocumentationFile>
+  </PropertyGroup>
+</Project>
