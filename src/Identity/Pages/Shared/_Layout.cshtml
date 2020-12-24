@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Mvc.ViewEngines
+@inject IWebHostEnvironment Environment
+@inject ICompositeViewEngine Engine
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData.GetTitle()</title>
+    <base href="/" />
+    <link rel="stylesheet" href="~/css/app.min.css" />
+</head>
+<body class="h-screen flex flex-col">
+    <main role="main" class="flex-grow flex items-center justify-center">
+        @RenderBody()
+    </main>
+
+    Image by <a href="https://pixabay.com/users/torstensimon-5039407/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2211587">torstensimon</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2211587">Pixabay</a>
+
+    <footer class="px-10 py-2 border-top">
+        <p class="text-gray-700 text-right">
+            &copy; 2020 - Identity - <a asp-area="" asp-page="Privacy">Privacy</a>
+        </p>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
