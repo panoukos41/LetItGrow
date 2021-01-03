@@ -106,10 +106,13 @@ namespace Microsoft.Extensions.Configuration
 
         private static string ReadValue(this IConfiguration configuration, string key)
         {
-            var value = configuration[key] ??
-                throw new ArgumentNullException(nameof(key), $"Could not find value for: '{key}'");
+            var value = configuration[key];
 
-            if (value.StartsWith('<'))
+            if (value is null or { Length: 0 })
+            {
+                throw new ArgumentNullException(nameof(key), $"Could not find value for: '{key}'");
+            }
+            else if (value.StartsWith('<'))
             {
                 throw new ArgumentException($"No value has been provided for '{key}'", nameof(key));
             }
