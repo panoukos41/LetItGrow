@@ -1,0 +1,25 @@
+name: LetItGrow
+services:
+  - name: blazor
+    project: UI.Web/UI.Web.csproj
+    tags: [ui]
+    replicas: 1
+    bindings:
+      - port: 5001
+        protocol: https
+
+  - name: identity
+    project: Identity/Identity.csproj
+    tags: [id]
+    replicas: 1
+    bindings:
+      - port: 6001
+        protocol: https
+
+  - name: api
+    project: Microservice.RestApi/Microservice.RestApi.csproj
+    tags: [api]
+    replicas: 1
+    bindings:
+      - port: 7001
+        protocol: https
