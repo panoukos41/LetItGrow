@@ -1,0 +1,23 @@
+{
+  "description": "",
+  "license": "",
+  "repository": "",
+  "devDependencies": {
+    "autoprefixer": "^10.0.2",
+    "postcss": "^8.2.4",
+    "postcss-cli": "^8.3.1",
+    "tailwindcss": "^2.0.2"
+  },
+  "postcss": {
+    "plugins": {
+      "tailwindcss": {},
+      "autoprefixer": {}
+    }
+  },
+  "scripts": {
+    "csswatch": "postcss ./Styles/app.css -o ./wwwroot/css/app.min.css --watch",
+    "cssbuild": "postcss ./Styles/app.css -o ./wwwroot/css/app.min.css",
+    "csspublish": "set NODE_ENV=production&& yarn postcss ./Styles/app.css -o ./wwwroot/css/app.min.css"
+  },
+  "version": "0.0.1"
+}
