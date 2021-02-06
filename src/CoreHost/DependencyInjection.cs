@@ -2,6 +2,7 @@
 using LetItGrow.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace LetItGrow.CoreHost
 {
@@ -24,6 +25,25 @@ namespace LetItGrow.CoreHost
             services.AddSingleton<IPrimaryKeyService, PrimaryKeyService>();
             services.AddSingleton<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Add redis related services:<br/>
+        /// - AddSingleton{<see cref="IDistributedCache"/>, <see cref="RedisService"/>
+        /// - AddSingleton{<see cref="IPubSubService"/>, <see cref="RedisService"/>
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddRedisServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            var options = ConfigurationOptions.Parse(configuration.GetService("redis"));
+
+            services.AddSingleton(x => new RedisService(options))
+                    .AddSingleton<IDistributedCache>(x => x.GetRequiredService<RedisService>())
+                    .AddSingleton<IPubSubService>(x => x.GetRequiredService<RedisService>());
 
             return services;
         }
