@@ -47,21 +47,21 @@ namespace LetItGrow.CoreHost.Services
         }
 
         /// <inheritdoc/>
-        public Task ListAdd(string list, string value)
+        public Task SetAdd(string set, string value)
         {
-            return _redis.SetAddAsync(list, value);
+            return _redis.SetAddAsync(set, value);
         }
 
         /// <inheritdoc/>
-        public Task ListDelete(string list, string value)
+        public Task SetDelete(string set, string value)
         {
-            return _redis.SetRemoveAsync(list, value);
+            return _redis.SetRemoveAsync(set, value);
         }
 
         /// <inheritdoc/>
-        public async Task<string[]> ListMembers(string list)
+        public async Task<string[]> SetMembers(string set)
         {
-            return (await _redis.SetMembersAsync(list))
+            return (await _redis.SetMembersAsync(set))
                 .Cast<string>()
                 .ToArray();
         }

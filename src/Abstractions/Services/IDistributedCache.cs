@@ -30,27 +30,27 @@ namespace LetItGrow.Services
         Task KeyDelete(string key);
 
         /// <summary>
-        /// Add a new value to a list of values.
+        /// Add a new value to a set of values.
         /// </summary>
-        /// <param name="list">The list key.</param>
+        /// <param name="set">The set key.</param>
         /// <param name="value">The value to add.</param>
         /// <returns>A task that when completed the operation has completed.</returns>
-        Task ListAdd(string list, string value);
+        Task SetAdd(string set, string value);
 
         /// <summary>
-        /// Get all list values.
+        /// Get all set values.
         /// </summary>
-        /// <param name="list">The list key.</param>
+        /// <param name="set">The set key.</param>
         /// <returns>A task that when completed the operation has completed and
-        /// it contains all the list values.</returns>
-        Task<string[]> ListMembers(string list);
+        /// it contains all the set values.</returns>
+        Task<string[]> SetMembers(string set);
 
         /// <summary>
-        /// Delete a value from a list.
+        /// Delete a value from a set.
         /// </summary>
-        /// <param name="list">The list key.</param>
+        /// <param name="set">The set key.</param>
         /// <param name="value">The value to delete.</param>
         /// <returns>A task that when completed the operation has completed.</returns>
-        Task ListDelete(string list, string value);
+        Task SetDelete(string set, string value);
     }
 }
