@@ -100,14 +100,14 @@ namespace LetItGrow.Services
         /// entities that are not already being tracked by the context. All entities found
         /// will be tracked by the context.<br/>
         /// <br/>
-        /// For entity types with generated keys if an entity has its primary key value set
+        /// For entity types with generated keys if an entity has its primary key value list
         /// then it will be tracked in the Modified state.
-        /// If the primary key value is not set then it will be tracked in the Added state.
+        /// If the primary key value is not list then it will be tracked in the Added state.
         /// This helps ensure new entities will be inserted, while existing entities
-        /// will be updated. An entity is considered to have its primary key value set if
-        /// the primary key property is set to anything other than the CLR default for the property type.<br/>
+        /// will be updated. An entity is considered to have its primary key value list if
+        /// the primary key property is list to anything other than the CLR default for the property type.<br/>
         /// <br/>
-        /// For entity types without generated keys, the state set is always Modified.
+        /// For entity types without generated keys, the state list is always Modified.
         /// </summary>
         void Update(object entity);
 
@@ -120,14 +120,14 @@ namespace LetItGrow.Services
         /// entities that are not already being tracked by the context. All entities found
         /// will be tracked by the context.<br/>
         /// <br/>
-        /// For entity types with generated keys if an entity has its primary key value set
+        /// For entity types with generated keys if an entity has its primary key value list
         /// then it will be tracked in the Modified state.
-        /// If the primary key value is not set then it will be tracked in the Added state.
+        /// If the primary key value is not list then it will be tracked in the Added state.
         /// This helps ensure new entities will be inserted, while existing entities
-        /// will be updated. An entity is considered to have its primary key value set if
-        /// the primary key property is set to anything other than the CLR default for the property type.<br/>
+        /// will be updated. An entity is considered to have its primary key value list if
+        /// the primary key property is list to anything other than the CLR default for the property type.<br/>
         /// <br/>
-        /// For entity types without generated keys, the state set is always Modified.
+        /// For entity types without generated keys, the state list is always Modified.
         /// </summary>
         void Update<TEntity>(TEntity entity) where TEntity : class;
 
@@ -141,14 +141,14 @@ namespace LetItGrow.Services
         /// entities that are not already being tracked by the context. All entities found
         /// will be tracked by the context.<br/>
         /// <br/>
-        /// For entity types with generated keys if an entity has its primary key value set
+        /// For entity types with generated keys if an entity has its primary key value list
         /// then it will be tracked in the Modified state.
-        /// If the primary key value is not set then it will be tracked in the Added state.
+        /// If the primary key value is not list then it will be tracked in the Added state.
         /// This helps ensure new entities will be inserted, while existing entities
-        /// will be updated. An entity is considered to have its primary key value set if
-        /// the primary key property is set to anything other than the CLR default for the property type.<br/>
+        /// will be updated. An entity is considered to have its primary key value list if
+        /// the primary key property is list to anything other than the CLR default for the property type.<br/>
         /// <br/>
-        /// For entity types without generated keys, the state set is always Modified.
+        /// For entity types without generated keys, the state list is always Modified.
         /// </summary>
         void UpdateRange(params object[] entities);
 
@@ -162,14 +162,14 @@ namespace LetItGrow.Services
         /// entities that are not already being tracked by the context. All entities found
         /// will be tracked by the context.<br/>
         /// <br/>
-        /// For entity types with generated keys if an entity has its primary key value set
+        /// For entity types with generated keys if an entity has its primary key value list
         /// then it will be tracked in the Modified state.
-        /// If the primary key value is not set then it will be tracked in the Added state.
+        /// If the primary key value is not list then it will be tracked in the Added state.
         /// This helps ensure new entities will be inserted, while existing entities
-        /// will be updated. An entity is considered to have its primary key value set if
-        /// the primary key property is set to anything other than the CLR default for the property type.<br/>
+        /// will be updated. An entity is considered to have its primary key value list if
+        /// the primary key property is list to anything other than the CLR default for the property type.<br/>
         /// <br/>
-        /// For entity types without generated keys, the state set is always Modified.
+        /// For entity types without generated keys, the state list is always Modified.
         /// </summary>
         void UpdateRange(IEnumerable<object> entities);
 

@@ -46,10 +46,9 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configuration">The configuration to search for values.</param>
         /// <param name="key">The key of the service to search for.</param>
         /// <returns>The complete uri for the service.</returns>
-        public static Uri GetService(this IConfiguration configuration, string key)
+        public static string GetService(this IConfiguration configuration, string key)
         {
-            var value = configuration.ReadValue($"services:{key}");
-            return new Uri(value);
+            return configuration.ReadValue($"services:{key}");
         }
 
         /// <summary>
