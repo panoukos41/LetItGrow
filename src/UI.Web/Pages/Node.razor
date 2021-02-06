@@ -1,0 +1,82 @@
+﻿@page "/node/{Id}"
+@inherits ReactiveComponentBase<NodeViewModel>
+
+@using LetItGrow.UI.Web.Components.Nodes.Modals
+@using LetItGrow.Microservice.Data.Nodes.Models
+
+@if (VM.LoadingNode)
+{
+    <Title Value="@($"LetItGrow Node - {Id}")"></Title>
+    <div class="h-full w-full flex items-center justify-center">
+        <Loading />
+    </div>
+}
+else
+{
+    <Title Value="@($"LetItGrow Node - {VM.Node.Name}")"></Title>
+    <div class="mt-2 h-2 rounded rounded-b-none bg-primary-600"></div>
+    <div class="mb-2 p-2 border border-t-0 rounded rounded-t-none bg-white">
+        <div class="flex items-center">
+            <h4>@VM.Node.Name</h4>
+            <button class="ml-auto btn-update" @onclick="OnUpdateClick">Update</button>
+        </div>
+        <hr class="my-4" />
+        <p>@(VM.Node.Description ?? "No Description")</p>
+        <hr class="my-4" />
+        <p class="text-xs font-mono">Updated by '@VM.Node.UpdatedBy' at '@VM.Node.UpdatedAt.ToDateTimeUtc().ToLocalTime()'</p>
+        <p class="text-xs font-mono">Created by '@VM.Node.CreatedBy' at '@VM.Node.CreatedAt.ToDateTimeUtc().ToLocalTime()'</p>
+    </div>
+
+    <div class="my-2 p-2 border rounded bg-white">
+        @* todo: show button to load measurements or irrigations *@
+        @if (VM.Node is IrrigationNodeModel)
+        {
+            <p>Irrigation node</p>
+        }
+        else if (VM.Node is MeasurementNodeModel)
+        {
+            <p>Measurement node</p>
+        }
+    </div>
+}
+
+@if (VM.Node is IrrigationNodeModel)
+{
+    <UpdateIrNodeModal @ref="irrigationModal" />
+}
+else if (VM.Node is MeasurementNodeModel)
+{
+    <UpdateMeNodeModal @ref="measurementModal" />
+}
+
+@code{
+    private UpdateIrNodeModal irrigationModal = null!;
+    private UpdateMeNodeModal measurementModal = null!;
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Inject]
+    public INodeService NodeService { get; set; } = null!;
+
+    public NodeViewModel VM { get => ViewModel!; set => ViewModel = value; }
+
+    protected void OnUpdateClick()
+    {
+        if (VM.Node is IrrigationNodeModel ir)
+        {
+            irrigationModal.Show(ir);
+        }
+        else if (VM.Node is MeasurementNodeModel me)
+        {
+            measurementModal.Show(me);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        VM = new(Id, NodeService);
+        VM.Activator.Activate();
+    }
+}

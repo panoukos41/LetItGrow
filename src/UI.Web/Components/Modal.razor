@@ -1,0 +1,23 @@
+﻿<div class="@(Visible ? "flex" : "hidden") fixed inset-0 bg-gray-200 bg-opacity-60 justify-center items-center" @onclick="BackgroundClicked">
+    <div class="z-50 flex-grow max-w-lg bg-gray-100 rounded shadow-2xl" @onclick:stopPropagation="true">
+        @ChildContent
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter]
+    public bool LightDismiss { get; set; } = true;
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    public void Toggle() => Visible = !Visible;
+
+    protected void BackgroundClicked()
+    {
+        if (LightDismiss) Toggle();
+    }
+}

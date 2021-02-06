@@ -1,0 +1,18 @@
+﻿@using LetItGrow.UI.Web.Components.Nodes.Forms
+
+<Modal @ref="modal" LightDismiss="false">
+    <CreateIrNodeForm @ref="form" OnCancelClick="modal.Toggle" />
+</Modal>
+
+@code{
+    Modal modal = null!;
+
+    CreateIrNodeForm form = null!;
+
+    public void Show()
+    {
+        form.SetData(new());
+        modal.Toggle();
+        StateHasChanged();
+    }
+}

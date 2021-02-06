@@ -1,0 +1,30 @@
+﻿@inherits LayoutComponentBase
+
+@using LetItGrow.UI.Services
+@using LetItGrow.UI.Web.Components.App
+
+@inject IDashboardService dashboard
+@inject INotificationService notificationService
+
+<AuthorizeView>
+    <NotAuthorized>
+        <RedirectToLogin />
+    </NotAuthorized>
+
+    @*Run the whole app only when the user is authorized.*@
+    <Authorized>
+        <Header />
+        <Topbar />
+        <Sidebar />
+        <Main>
+            @Body
+        </Main>
+
+        @code{
+            protected override async Task OnInitializedAsync()
+            {
+                await dashboard.ConnectAsync(default);
+            }
+        }
+    </Authorized>
+</AuthorizeView>

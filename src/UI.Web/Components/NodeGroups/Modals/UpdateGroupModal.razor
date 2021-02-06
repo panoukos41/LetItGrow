@@ -1,0 +1,21 @@
+﻿@using LetItGrow.UI.Web.Components.NodeGroups.Forms
+@using LetItGrow.Microservice.Data.NodeGroups.Models
+
+@inject INodeService nodeService
+
+<Modal @ref="modal" LightDismiss="false">
+    <UpdateGroupForm @ref="form" OnCancelClick="modal.Toggle" />
+</Modal>
+
+@code{
+    Modal modal = null!;
+
+    UpdateGroupForm form = null!;
+
+    public void Show(NodeGroupModel group)
+    {
+        form.SetGroup(group);
+        modal.Toggle();
+        StateHasChanged();
+    }
+}

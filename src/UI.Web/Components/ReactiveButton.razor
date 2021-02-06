@@ -1,0 +1,49 @@
+﻿@typeparam TResult
+@inherits BaseComponent
+
+<button type="@Type" class="@Class" @onclick="OnClick" disabled=@(!CanExecute)>@ChildContent?.Invoke(this)</button>
+
+@code{
+    /// <summary>
+    /// The underlying reactive command for this button. The button state
+    /// will change depending on the command.
+    /// </summary>
+    [Parameter]
+    public ReactiveCommand<Unit, TResult> Command { get; set; } = null!;
+
+    /// <summary>
+    /// Gets a property whose value indicates whether the command can currently execute.
+    /// </summary>
+    public bool CanExecute { get; private set; } = true;
+
+    /// <summary>
+    /// Gets a property whose value indicates whether the command is currently executing.
+    /// </summary>
+    public bool IsExecuting { get; private set; } = false;
+
+    [Parameter]
+    public RenderFragment<ReactiveButton<TResult>>? ChildContent { get; set; }
+
+    [Parameter]
+    public ButtonType Type { get; set; }
+
+    protected void OnClick() => Command?.Invoke();
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (Command is null) return;
+
+        Command.CanExecute.Subscribe(x =>
+        {
+            CanExecute = x;
+            StateHasChanged();
+        });
+        Command.IsExecuting.Subscribe(x =>
+        {
+            IsExecuting = x;
+            StateHasChanged();
+        });
+    }
+}

@@ -1,0 +1,21 @@
+﻿@using LetItGrow.UI.Web.Components.Nodes.Forms
+@using LetItGrow.Microservice.Data.Nodes.Models
+
+@inject INodeService nodeService
+
+<Modal @ref="modal" LightDismiss="false">
+    <UpdateIrNodeForm @ref="form" OnCancelClick="modal.Toggle" />
+</Modal>
+
+@code{
+    Modal modal = null!;
+
+    UpdateIrNodeForm form = null!;
+
+    public void Show(IrrigationNodeModel node)
+    {
+        form.SetNode(node);
+        modal.Toggle();
+        StateHasChanged();
+    }
+}

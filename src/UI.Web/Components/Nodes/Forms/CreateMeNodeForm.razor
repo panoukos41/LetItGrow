@@ -1,0 +1,72 @@
+﻿@using LetItGrow.Microservice.Data.Nodes.Models
+@using LetItGrow.Microservice.Data.Nodes.Requests
+@using LetItGrow.Microservice.Data.Nodes.Validators
+
+@inject INodeService nodeService
+
+<EditForm Model="Data" class="form" OnValidSubmit="OnValidSubmit">
+    <FluentValidator Validator="validator" />
+
+    <fieldset>
+        <legend>Measurement Node</legend>
+
+        <div class="form-group">
+            <label>Name</label>
+            <InputText @bind-Value="Data.Name" />
+            <ValidationMessage class="block text-red-400" For="() => Data.Name" />
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <InputTextArea @bind-Value="Data.Description" />
+            <ValidationMessage For="() => Data.Description" />
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Settings</legend>
+
+        <div class="form-group">
+            <label>PollInterval</label>
+            <InputNumber @bind-Value="Data.Settings.PollInterval" />
+            <ValidationMessage class="block text-red-400" For="() => Data.Settings.PollInterval" />
+        </div>
+    </fieldset>
+
+    <div class="form-group flex justify-end space-x-2">
+        <button type="submit" class="btn">Create</button>
+        <button type="button" class="btn-cancel" @onclick="OnCancelClick">Cancel</button>
+    </div>
+</EditForm>
+
+@code{
+    CreateMeasurementNodeValidator validator = new();
+
+    [Parameter]
+    public CreateMeasurementNode Data { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnCancelClick { get; set; }
+
+    public void SetData(CreateMeasurementNode data)
+    {
+        Data = data;
+    }
+
+    protected async void OnValidSubmit(EditContext context)
+    {
+        await nodeService
+            .Create(Data)
+            .MatchAsync(HandleResult, HandleError);
+    }
+
+    protected void HandleResult(MeasurementNodeModel result)
+    {
+
+    }
+
+    protected void HandleError(Error error)
+    {
+        Console.WriteLine(error);
+    }
+}

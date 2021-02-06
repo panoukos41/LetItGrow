@@ -15,9 +15,12 @@
     }
   },
   "scripts": {
-    "csswatch": "postcss ./Styles/app.css -o ./wwwroot/css/app.min.css --watch",
-    "cssbuild": "postcss ./Styles/app.css -o ./wwwroot/css/app.min.css",
-    "csspublish": "set NODE_ENV=production&& yarn postcss ./Styles/app.css -o ./wwwroot/css/app.min.css"
-  },
-  "version": "0.0.1"
+    "td-watch": "postcss ./Styles/app.css -o ./wwwroot/css/app.min.css --watch",
+    "td-build": "postcss ./Styles/app.css -o ./wwwroot/css/app.min.css",
+    "td-publish": "set NODE_ENV=production&& npm run td-build",
+    "bi-build": "postcss ./Styles/bootstrap-icons.css -o ./wwwroot/css/bootstrap-icons.min.css",
+    "bi-publish": "set NODE_ENV=production&& npm run bi-build",
+    "cssbuild": "npm run td-build&& npm run bi-build",
+    "csspublish": "set NODE_ENV=production&& npm run cssbuild"
+  }
 }

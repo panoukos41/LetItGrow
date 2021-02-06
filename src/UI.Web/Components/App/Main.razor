@@ -1,0 +1,20 @@
+﻿<section class="main@(css.End())">
+    @ChildContent
+</section>
+
+@code{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private CssBuilder css;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        css = new CssBuilder(Class);
+    }
+}

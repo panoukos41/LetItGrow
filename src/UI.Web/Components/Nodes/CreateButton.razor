@@ -1,0 +1,37 @@
+﻿@using LetItGrow.Microservice.Data.Nodes.Models
+
+<button class="relative btn flex justify-center items-center" @onclick="OnClick" @onfocusout="OnFocusOut">
+    <div>
+        <span class="mr-1">Create</span>
+        <span class="border border-gray-200 bg-gray-200 absolute top-1 bottom-1"></span>
+        <span class="ml-2 bi-arrow-right "></span>
+    </div>
+    <ul class="absolute top-3/4 left-0 @(IsActive ? "block" : "hidden") mt-2 z-10 rounded p-5 shadow bg-gray-100">
+        <li class="btn w-full mt-0 bg-irrigation hover:bg-irrigation-hover active:bg-irrigation-active" @onclick="IrrigationClick">CreateIrrigationNode</li>
+        <li class="btn w-full mt-2 bg-measurement hover:bg-measurement-hover active:bg-measurement-active" @onclick="MeasurementClick">CreateMeasurementNode</li>
+        <li class="btn w-full mt-2" @onclick="GroupClick">CreateGroup</li>
+    </ul>
+</button>
+
+@code{
+    bool IsActive = false;
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> IrrigationClick { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> MeasurementClick { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> GroupClick { get; set; }
+
+    protected void OnClick()
+    {
+        IsActive = !IsActive;
+    }
+
+    protected void OnFocusOut()
+    {
+        IsActive = false;
+    }
+}

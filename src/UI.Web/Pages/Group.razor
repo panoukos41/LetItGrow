@@ -1,0 +1,52 @@
+﻿@page "/group/{Id}"
+@inherits ReactiveComponentBase<GroupViewModel>
+
+@using LetItGrow.Microservice.Data.NodeGroups.Models;
+@using LetItGrow.UI.Web.Components.NodeGroups.Modals
+
+@if (VM.LoadingGroup)
+{
+    <Title Value="@($"LetItGrow Group - {Id}")"></Title>
+    <div class="w-full h-full flex items-center justify-center">
+        <Loading />
+    </div>
+}
+else
+{
+    <Title Value="@($"LetItGrow Group - {VM.Group.Name}")"></Title>
+    <div class="container">
+        <div class="mt-2 h-2 rounded rounded-b-none bg-primary-600"></div>
+        <div class="mb-2 p-2 border border-t-0 rounded rounded-t-none bg-white">
+            <div class="flex items-center">
+                <h4>@VM.Group.Name</h4>
+                <button class="ml-auto btn bg-yellow-500 hover:bg-yellow-300 active:bg-yellow-600" @onclick="() => updateModal.Show(VM.Group)">Update</button>
+            </div>
+            <hr class="my-4" />
+            <p>@(VM.Group.Description ?? "No Description")</p>
+            <hr class="my-4" />
+            <p class="text-xs font-mono">Updated by '@VM.Group.UpdatedBy' at '@VM.Group.UpdatedAt.ToDateTimeUtc().ToLocalTime()'</p>
+            <p class="text-xs font-mono">Created by '@VM.Group.CreatedBy' at '@VM.Group.CreatedAt.ToDateTimeUtc().ToLocalTime()'</p>
+        </div>
+    </div>
+}
+
+<UpdateGroupModal @ref="updateModal" />
+
+@code{
+    private UpdateGroupModal updateModal = null!;
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Inject]
+    public INodeGroupService GroupService { get; set; } = null!;
+
+    public GroupViewModel VM { get => ViewModel!; set => ViewModel = value; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        VM = new(Id, GroupService);
+        VM.Activator.Activate();
+    }
+}

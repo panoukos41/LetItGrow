@@ -1,0 +1,65 @@
+﻿@page "/"
+@inherits ReactiveComponentBase<HomeViewModel>
+
+@using LetItGrow.UI.Web.Components.NodeGroups.Modals
+@using LetItGrow.UI.Web.Components.Nodes
+@using LetItGrow.UI.Web.Components.Nodes.Modals
+
+<Title Value="LetItGrow - Home"></Title>
+
+<div class="flex flex-wrap border rounded">
+    <button class="btn m-2 bg-irrigation hover:bg-irrigation-hover active:bg-irrigation-active" @onclick="() => createIrrigationModal.Show()">
+        Create Irrigation Node
+    </button>
+    <button class="btn m-2 bg-measurement hover:bg-measurement-hover active:bg-measurement-active" @onclick="() => createMeasurementModal.Show()">
+        Create Measurement Node
+    </button>
+    <button class="btn m-2" @onclick="() => createGroupModal.Show()">
+        Create Group
+    </button>
+</div>
+
+<fieldset class="my-2 border rounded">
+    <legend class="text-2xl ml-5">Grouped</legend>
+
+    <Virtualize Items="VM.GroupedNodes" Context="pair">
+        <fieldset @key="pair.Group.Id" class="border-t pl-2">
+            @{ var (id, name) = pair.Group; }
+
+            <legend><a class="link" href="/group/@id">@name</a></legend>
+
+            <div class="flex flex-wrap">
+                <Virtualize Items="pair.Nodes" Context="node">
+                    <NodeCard @key="node.Id" Node="node" Class="@cardCss" />
+                </Virtualize>
+            </div>
+        </fieldset>
+    </Virtualize>
+</fieldset>
+
+<fieldset class="p-4 my-2 border rounded">
+    <legend class="text-2xl">Ungrouped</legend>
+
+    <div class="flex flex-wrap">
+        <Virtualize Items="VM.UngroupedNodes" Context="node">
+            <NodeCard @key="node.Id" Node="node" Class="@cardCss" />
+        </Virtualize>
+    </div>
+</fieldset>
+
+<CreateIrNodeModal @ref="createIrrigationModal" />
+<CreateMeNodeModal @ref="createMeasurementModal" />
+<CreateGroupModal @ref="createGroupModal" />
+
+@code{
+    private string cardCss = "m-1 transform duration-200 hover:-translate-y-1 hover:shadow-xl";
+
+    [Inject]
+    public HomeViewModel VM { get => ViewModel!; set => ViewModel = value; }
+
+    protected CreateIrNodeModal createIrrigationModal = null!;
+
+    protected CreateMeNodeModal createMeasurementModal = null!;
+
+    protected CreateGroupModal createGroupModal = null!;
+}

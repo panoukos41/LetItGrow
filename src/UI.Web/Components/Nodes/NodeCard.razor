@@ -1,0 +1,31 @@
+﻿@using LetItGrow.Microservice.Data.Nodes.Models
+
+<a href="/node/@Node.Id" class="@css block relative w-72 rounded p-2 shadow-md">
+    <div class="flex">
+        <h6 class="font-mono font-medium">@Node.Name</h6>
+        <div class="absolute right-0 top-0">
+            <div class="h-5 w-5 shadow rounded @(Node.Connected ? "bg-green-400" : "bg-red-500")"></div>
+        </div>
+    </div>
+    <p>@(Node.Description ?? "No Description.")</p>
+    <p class="mt-auto">@Node.UpdatedAt</p>
+</a>
+
+@code{
+    [Parameter]
+    public NodeModel Node { get; set; } = null!;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private CssBuilder css;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        css = new CssBuilder()
+            .AddClass(Class)
+            .AddClass("bg-irrigation", Node is IrrigationNodeModel)
+            .AddClass("bg-measurement", Node is MeasurementNodeModel);
+    }
+} 

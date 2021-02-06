@@ -1,0 +1,22 @@
+﻿<aside class="sidebar@(css.End())">
+    <SidebarItem href="/" Match="NavLinkMatch.All">Home</SidebarItem>
+    <SidebarItem href="/irrigations">Irrigations</SidebarItem>
+    <SidebarItem href="/measurement">Measurements</SidebarItem>
+
+    <SidebarItem Class="mt-auto" href="/about">About</SidebarItem>
+    @*<a class="block m-5 hover:text-purple-400" href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>*@
+</aside>
+
+@code{
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private CssBuilder css;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        css = new CssBuilder(Class);
+    }
+}

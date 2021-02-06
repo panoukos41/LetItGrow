@@ -1,0 +1,18 @@
+﻿@using LetItGrow.UI.Web.Components.NodeGroups.Forms
+
+<Modal @ref="modal" LightDismiss="false">
+    <CreateGroupForm @ref="form" OnCancelClick="modal.Toggle" />
+</Modal>
+
+@code{
+    Modal modal = null!;
+
+    CreateGroupForm form = null!;
+
+    public void Show()
+    {
+        form.SetData(new());
+        modal.Toggle();
+        StateHasChanged();
+    }
+}
