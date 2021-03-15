@@ -5,21 +5,21 @@ using System.Text.Json.Serialization;
 
 namespace LetItGrow.Microservice.Data.NodeAuths.Requests
 {
-    public record CreateNodeAuth : IRequest<NodeAuthModel>
+    public record FindNodeAuth : IRequest<NodeAuthModel>
     {
         [JsonPropertyName("nodeId")]
         public string NodeId { get; init; } = string.Empty;
 
-        public CreateNodeAuth()
+        public FindNodeAuth()
         {
         }
 
-        public CreateNodeAuth(string nodeId)
+        public FindNodeAuth(string nodeId)
         {
             NodeId = nodeId;
         }
 
-        public CreateNodeAuth(NodeModel node)
+        public FindNodeAuth(NodeModel node)
         {
             NodeId = node.Id;
         }

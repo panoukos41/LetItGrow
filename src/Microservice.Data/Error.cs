@@ -10,7 +10,7 @@ namespace LetItGrow.Microservice.Data
     /// A record describing an error. Two records are considered equal
     /// when they have the same <see cref="Title"/> and <see cref="Status"/> other members are ignored.
     /// </summary>
-    public record Error //: IEquatable<Error?>
+    public record Error
     {
         /// <summary>
         /// Initialize a new <see cref="Error"/> record.
@@ -70,16 +70,16 @@ namespace LetItGrow.Microservice.Data
         // More details for how to ovveride methods of a record at:
         // https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/exploration/records#prerequisites
 
+        /// <inheritdoc/>
         protected virtual bool PrintMembers(StringBuilder b)
         {
             b.Append($"Title = {Title}, ");
             b.Append($"Status = {Status}, ");
             b.Append($"Detail = {Detail}, ");
 
-            b.Append("Metadata = {");
+            b.Append("Metadata = { ");
             if (Metadata.Any())
             {
-                b.Append(' '); // we need to have one space after the "{"
                 foreach (var (key, value) in Metadata)
                 {
                     b.Append($"\"{key}\": \"{value}\", ");
@@ -90,6 +90,7 @@ namespace LetItGrow.Microservice.Data
             return true;
         }
 
+        /// <inheritdoc/>
         public virtual bool Equals(Error? other)
         {
             return other is not null &&
@@ -97,6 +98,7 @@ namespace LetItGrow.Microservice.Data
                 Status == other.Status;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return HashCode.Combine(Title, Status);

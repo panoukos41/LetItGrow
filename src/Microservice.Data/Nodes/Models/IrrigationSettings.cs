@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text.Json.Serialization;
-
-namespace LetItGrow.Microservice.Data.Nodes.Models
+﻿namespace LetItGrow.Microservice.Data.Nodes.Models
 {
     /// <summary>
     /// Settings for an irrigation node.
@@ -16,7 +13,6 @@ namespace LetItGrow.Microservice.Data.Nodes.Models
         /// Min is 60       => 1 minute.<br/>
         /// Max is 21600    => 6 hours.
         /// </summary>
-        [JsonPropertyName("pollInterval")]
         public int PollInterval { get; set; }
 
         /// <summary>
@@ -25,11 +21,6 @@ namespace LetItGrow.Microservice.Data.Nodes.Models
         public IrrigationSettings()
         {
             PollInterval = 1800;
-        }
-
-        public object Json()
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

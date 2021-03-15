@@ -1,7 +1,5 @@
-﻿using LetItGrow.Microservice.Data.NodeAuths.Models;
-using LetItGrow.Microservice.Data.NodeGroups.Models;
-using LetItGrow.Microservice.Data.Nodes.Json;
-using NodaTime;
+﻿using NodaTime;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace LetItGrow.Microservice.Data.Nodes.Models
@@ -9,8 +7,7 @@ namespace LetItGrow.Microservice.Data.Nodes.Models
     /// <summary>
     /// This is the base record for all nodes.
     /// </summary>
-    [JsonConverter(typeof(NodeModelJsonConverter))]
-    public abstract record NodeModel
+    public record NodeModel
     {
         /// <summary>
         /// The id of the node.
@@ -22,7 +19,7 @@ namespace LetItGrow.Microservice.Data.Nodes.Models
         /// A random value that must change whenever an object persisted to the store.
         /// </summary>
         [JsonPropertyName("concurrencyStamp")]
-        public uint ConcurrencyStamp { get; init; }
+        public string ConcurrencyStamp { get; init; } = string.Empty;
 
         /// <summary>
         /// The name of the node.
@@ -37,10 +34,14 @@ namespace LetItGrow.Microservice.Data.Nodes.Models
         public string? Description { get; init; }
 
         /// <summary>
-        /// The nodes type.
+        /// The node's type.
         /// </summary>
         [JsonPropertyName("type")]
-        public string Type { get; init; } = string.Empty;
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public NodeType Type { get; init; }
+
+        [JsonPropertyName("settings")]
+        public JsonDocument? Settings { get; set; }
 
         /// <summary>
         /// The exact momment this node was created.
@@ -65,23 +66,12 @@ namespace LetItGrow.Microservice.Data.Nodes.Models
         /// </summary>
         [JsonPropertyName("updatedBy")]
         public string UpdatedBy { get; init; } = string.Empty;
+
         /// <summary>
         /// A foreign key that points to the node's group.
         /// </summary>
         [JsonPropertyName("nodeGroupId")]
-        public string? NodeGroupId { get; init; }
-
-        /// <summary>
-        /// The group that corresponds to the Id property.
-        /// </summary>
-        [JsonPropertyName("nodeGroup")]
-        public NodeGroupModel? NodeGroup { get; set; }
-
-        /// <summary>
-        /// The auth that this node contains.
-        /// </summary>
-        [JsonPropertyName("nodeAuth")]
-        public NodeAuthModel? NodeAuth { get; set; }
+        public string? GroupId { get; init; }
 
         /// <summary>
         /// A value indicating if this node is connected to the server.

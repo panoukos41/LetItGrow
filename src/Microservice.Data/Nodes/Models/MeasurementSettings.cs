@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace LetItGrow.Microservice.Data.Nodes.Models
+﻿namespace LetItGrow.Microservice.Data.Nodes.Models
 {
     /// <summary>
     /// Settings for a measurement node.
@@ -15,7 +13,6 @@ namespace LetItGrow.Microservice.Data.Nodes.Models
         /// Min is 60      => 1 minute.<br/>
         /// Max is 3600    => 1 hour.
         /// </summary>
-        [JsonPropertyName("pollInterval")]
         public int PollInterval { get; set; }
 
         /// <summary>

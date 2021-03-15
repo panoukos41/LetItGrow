@@ -1,25 +1,24 @@
-﻿using LetItGrow.Microservice.Data.NodeAuths.Models;
-using LetItGrow.Microservice.Data.Nodes.Models;
+﻿using LetItGrow.Microservice.Data.Nodes.Models;
 using MediatR;
 using System.Text.Json.Serialization;
 
 namespace LetItGrow.Microservice.Data.NodeAuths.Requests
 {
-    public record CreateNodeAuth : IRequest<NodeAuthModel>
+    public record DeleteNodeAuth : IRequest<Unit>
     {
         [JsonPropertyName("nodeId")]
         public string NodeId { get; init; } = string.Empty;
 
-        public CreateNodeAuth()
+        public DeleteNodeAuth()
         {
         }
 
-        public CreateNodeAuth(string nodeId)
+        public DeleteNodeAuth(string nodeId)
         {
             NodeId = nodeId;
         }
 
-        public CreateNodeAuth(NodeModel node)
+        public DeleteNodeAuth(NodeModel node)
         {
             NodeId = node.Id;
         }

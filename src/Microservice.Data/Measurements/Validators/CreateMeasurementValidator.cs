@@ -14,7 +14,7 @@ namespace LetItGrow.Microservice.Data.Measurements.Validators
                 .NotEmpty();
 
             RuleFor(x => x.AirTemperatureC)
-                .InclusiveBetween(-50.00, 80.00);
+                .InclusiveBetween(-20.00, 50.00);
 
             RuleFor(x => x.AirHumidity)
                 .InclusiveBetween(0.00, 100.00);
