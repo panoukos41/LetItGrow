@@ -1,0 +1,27 @@
+﻿@inherits BaseComponent
+
+<div class="@css">
+    <h2 class="p-1 my-1">@Model.ClientId</h2>
+    <p class="p-1 my-1" >@Model.DisplayName</p>
+    @foreach (var uri in Model.RedirectUris)
+    {
+        <p class="my-1 px-4 py-1 rounded-xl border bg-blue-500 text-gray-100">@uri</p>
+    }
+    @foreach (var uri in Model.PostLogoutRedirectUris)
+    {
+        <p class="my-1 px-4 py-1 rounded-xl border bg-blue-500 text-gray-100">@uri</p>
+    }
+</div>
+
+@code{
+    [Parameter]
+    public ApplicationModel Model { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        if (Model is null) throw new ArgumentNullException(nameof(Model));
+
+        css = CreateCss("border shadow p-2")
+            .AddClass(Class);
+    }
+}

@@ -1,0 +1,11 @@
+﻿@page "/authentication/{action}"
+@using LetItGrow.UI.Common.Layouts
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@layout IdentityLayout
+
+<RemoteAuthenticatorView Action="@Action" />
+
+@code{
+    [Parameter] public string? Action { get; set; }
+}

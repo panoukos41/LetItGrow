@@ -1,0 +1,23 @@
+﻿@inherits LayoutComponentBase
+@using LetItGrow.UI.Common.AppComponents
+@inject HubService hub
+
+<AuthorizeView>
+<NotAuthorized>
+    <RedirectToLogin />
+</NotAuthorized>
+
+@*Run the whole app only when the user is authorized.*@
+<Authorized>
+    <Header />
+    <Main ChildContent="Body!" />
+
+    @code{
+        protected override async Task OnInitializedAsync()
+        {
+            Events.WhenConnection().Subscribe(c => Console.WriteLine(c.ToString()));
+            await hub.ConnectAsync(default);
+        }
+    }
+</Authorized>
+</AuthorizeView>

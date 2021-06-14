@@ -1,0 +1,103 @@
+﻿@inject INodeService nodeService
+
+<EditForm EditContext="form">
+    <FluentValidationValidator Validator="form.Validator" />
+
+    <fieldset>
+        <legend>Creating Node</legend>
+
+        <div>
+            <label>Name</label>
+            <InputText @bind-Value="form.Request.Name" />
+            <ValidationMessage For="() => form.Request.Name" />
+        </div>
+
+        <div>
+            <label>Description</label>
+            <InputTextArea rows="2" @bind-Value="form.Request.Description" />
+            <ValidationMessage For="() => form.Request.Description" />
+        </div>
+
+        <div>
+            <label>Type</label>
+            <InputSelect @bind-Value="form.Request.Type">
+                @foreach (var type in Enum.GetValues(typeof(NodeType)))
+                {
+                    <option value="@type">@type</option>
+                }
+            </InputSelect>
+            <ValidationMessage class="w-full" For="() => form.Request.Type" />
+        </div>
+    </fieldset>
+</EditForm>
+
+<fieldset>
+    <legend>Settings</legend>
+
+    @if (form.Request.Type == NodeType.Irrigation)
+    {
+        <EditForm Model="iSettings">
+            <FluentValidationValidator Validator="iSettingsValidator" />
+
+            <label>PollInterval</label>
+            <InputNumber @bind-Value="iSettings.PollInterval" />
+            <ValidationMessage class="w-full" For="() => iSettings.PollInterval" />
+        </EditForm>
+    }
+    else if (form.Request.Type == NodeType.Measurement)
+    {
+        <EditForm Model="mSettings">
+            <FluentValidationValidator Validator="mSettingsValidator" />
+
+            <label>PollInterval</label>
+            <InputNumber @bind-Value="mSettings.PollInterval" />
+            <ValidationMessage For="() => mSettings.PollInterval" />
+        </EditForm>
+    }
+</fieldset>
+
+<div class="flex justify-end space-x-2">
+    <SpinnerButton Class="btn text-gray-100" Command="form.Command">Create</SpinnerButton>
+    <button type="button" class="btn-cancel text-gray-100" @onclick="OnCancelClick">Cancel</button>
+</div>
+
+@code{
+    private FormContext<CreateNode, CreateNodeValidator, Result<NodeModel>> form;
+    private IrrigationSettings iSettings = new();
+    private MeasurementSettings mSettings = new();
+    private IrrigationSettingsValidator iSettingsValidator = new();
+    private MeasurementSettingsValidator mSettingsValidator = new();
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnCancelClick { get; set; }
+
+    public CreateNodeForm()
+    {
+        form = new(Execute, Result, CanExecute);
+    }
+
+    private bool CanExecute() => form.Request.Type switch
+    {
+        NodeType.Irrigation => iSettingsValidator.Validate(iSettings).IsValid,
+        NodeType.Measurement => mSettingsValidator.Validate(mSettings).IsValid,
+        _ => false
+    };
+
+    private Task<Result<NodeModel>> Execute(CreateNode request)
+    {
+        request.Settings = form.Request.Type switch
+        {
+            NodeType.Irrigation => iSettings.ToJsonDocument(),
+            NodeType.Measurement => mSettings.ToJsonDocument(),
+            _ => null
+        };
+        return nodeService.Create(request);
+    }
+
+    private void Result(Result<NodeModel> r) => r.Switch(
+        result => { },
+        error =>
+        {
+            Console.WriteLine(error);
+        });
+}

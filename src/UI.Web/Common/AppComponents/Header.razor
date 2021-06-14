@@ -1,0 +1,41 @@
+﻿@inherits BaseComponent
+@inject ThemeJs theme
+@inject NavigationManager nav
+
+<header class="@css">
+    <button class="px-4" @onclick="HomeClick">
+        <i class="bi bi-house-fill"></i>
+    </button>
+
+    <LoginDisplay Class="ml-auto" />
+
+    <button class="px-4" @onclick="Toggle">
+        <i class="bi @(IsLight ? "bi-moon-fill" : "bi-sun")"></i>
+    </button>
+</header>
+
+@code{
+    private bool IsLight = false;
+
+    private void HomeClick() => nav.NavigateTo("/");
+
+    private async void Toggle()
+    {
+        IsLight = await theme.Toggle() == ThemeJs.Light;
+        StateHasChanged();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        IsLight = await theme.GetTheme() == ThemeJs.Light;
+        StateHasChanged();
+    }
+    
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        css = CreateCss("content header flex items-center").AddClass(Class);
+    }
+}

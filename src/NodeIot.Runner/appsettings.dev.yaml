@@ -1,0 +1,5 @@
+﻿ClientId: "Node01"
+Type: "Measurement"
+Token: "123456789"
+Server: 192.168.1.35:8000
+Certificate: <Path to certificate>

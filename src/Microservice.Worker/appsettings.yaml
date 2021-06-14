@@ -1,0 +1,17 @@
+Services:
+  CouchDb: <The couchdb username;password;url example => admin;admin;http://localhost:5984>
+
+Serilog:
+  MinimumLevel:
+    Default: Information
+    Override:
+      Grpc: Warning
+      System: Warning
+      Microsoft: Warning
+      Microsoft.Hosting.Lifetime: Information
+      Microsoft.AspNetCore.SignalR: Information
+      Microsoft.Extensions.Diagnostics.HealthChecks: Warning
+
+  WriteTo:
+    - { Name: Console }
+    - { Name: File, Args: { Path: "logs/logs.txt", RollingInterval: Day } }

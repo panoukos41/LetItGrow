@@ -1,0 +1,31 @@
+﻿@inherits BaseComponent
+@typeparam TResult
+
+<ReactiveButton Class="@Class" TResult="TResult" Type="Type" Command="Command" Context="button">
+    @if (button.IsExecuting)
+    {
+        <div class="loader"></div>
+    }
+    else
+    {
+        @ChildContent
+    }
+</ReactiveButton>
+
+@code{
+    /// <summary>
+    /// The underlying reactive command for this button. The button state
+    /// will change depending on the command.
+    /// </summary>
+    [Parameter]
+    public ReactiveCommand<Unit, TResult> Command { get; set; } = null!;
+
+    /// <summary>
+    /// The button type. Default is submit.
+    /// </summary>
+    [Parameter]
+    public ButtonType Type { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

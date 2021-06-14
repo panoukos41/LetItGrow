@@ -1,0 +1,22 @@
+{
+	"_id": "_design/letitgrow",
+	"_rev": "16-0d579273cdb4cf8131e360920ddb32a4",
+	"views": {
+		"node": {
+			"map": "function (doc) {\n  if (doc.split_discriminator == 'letitgrow.node') {\n    emit(doc._id, doc._rev);\n  }\n}"
+		},
+		"node.group_id": {
+			"map": "function (doc) {\n  if (doc.split_discriminator == 'letitgrow.node' && doc.group_id) {\n    emit(doc.group_id, doc._rev);\n  }\n}"
+		},
+		"group": {
+			"map": "function (doc) {\n  if (doc.split_discriminator == 'letitgrow.group') {\n    emit(doc._id, doc._rev);\n  }\n}"
+		},
+		"irrigation.issued_at_unix": {
+			"map": "function (doc) {\n  if (doc.split_discriminator == 'letitgrow.irrigation') {\n    emit([doc.node_id, doc.issued_at_unix], doc._rev);\n  }\n}"
+		},
+		"measurement.measured_at_unix": {
+			"map": "function (doc) {\n  if (doc.split_discriminator == 'letitgrow.measurement') {\n    emit([doc.node_id, doc.measured_at_unix], doc._rev);\n  }\n}"
+		}
+	},
+	"language": "javascript"
+}

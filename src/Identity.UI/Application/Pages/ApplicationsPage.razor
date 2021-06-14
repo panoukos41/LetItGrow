@@ -1,0 +1,44 @@
+﻿@page "/app"
+@attribute [Authorize(Roles = "Admin")]
+@inject ApplicationService service
+
+<div class="flex justify-between">
+    <p>These are the available applications.</p>
+    @*<button>Add</button>*@
+</div>
+
+@if (error is not null)
+{
+    <ErrorComponent Error="error" />
+}
+else if (models is not null)
+{
+    @* todo: Add delete button *@
+    <Virtualize Items="models" Context="model">
+        <ApplicationComponent Class="m-2" Model="model" />
+    </Virtualize>
+}
+else
+{
+    <div class="flex items-center justify-center">
+        <Loading />
+    </div>
+}
+
+@code{
+    private Error? error;
+    private List<ApplicationModel>? models;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        (await service.GetAllAsync())
+        .Switch(
+            r => models = new(r),
+            e => error = e
+        );
+
+        StateHasChanged();
+    }
+}

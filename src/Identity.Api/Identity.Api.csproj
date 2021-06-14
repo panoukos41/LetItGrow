@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>LetItGrow.Identity</RootNamespace>
+    <AssemblyName>LetItGrow.Identity.Api</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+    <ProjectReference Include="..\CoreHost\CoreHost.csproj" />
+    <ProjectReference Include="..\Identity\Identity.csproj" />
+    <ProjectReference Include="..\Identity.UI\Identity.UI.csproj" />  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.Identity.CouchDB" Version="0.2.2-beta" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.2.3" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.7" />
+    <PackageReference Include="OpenIddict.AspNetCore" Version="3.0.5" />
+    <PackageReference Include="P41.OpenIddict.CouchDB" Version="0.3.5-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="*.yaml" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="wwwroot\app.css" />
+  </ItemGroup>
+
+  <Target Name="CompileCss" Condition="'$(Configuration)' == 'Release'" BeforeTargets="Build">
+    <Message Importance="high" Text="Compiling publish css" />
+    <Exec Command="yarn" />
+    <Exec Command="yarn run csspublish" />
+  </Target>
+</Project>

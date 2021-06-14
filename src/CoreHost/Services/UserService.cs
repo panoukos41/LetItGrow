@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 namespace LetItGrow.CoreHost.Services
 {
     /// <summary>
-    /// todo: summary
+    /// Implementation of <see cref="IUserService"/>
     /// </summary>
     public class UserService : IUserService
     {
@@ -15,8 +15,9 @@ namespace LetItGrow.CoreHost.Services
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public string? GetId() => httpContextAccessor
-            .HttpContext
+        /// <inheritdoc/>
+        public string? GetId() =>
+            httpContextAccessor.HttpContext
                 ?.User
                 ?.Identity
                 ?.Name;

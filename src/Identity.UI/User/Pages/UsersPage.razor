@@ -1,0 +1,52 @@
+﻿@page "/user"
+@attribute [Authorize(Roles = "Admin")]
+@inject UserService service
+
+<div class="flex justify-between">
+    <p>These are the app users.</p>
+    <button @onclick="async () => await dialog.ShowAsync()">Add</button>
+</div>
+
+@if (error is not null)
+{
+    <ErrorComponent Error="error" />
+}
+else if (models is not null)
+{
+    @* todo: Add delete button *@
+    <div class="w-auto">
+        <Virtualize Items="models" Context="model">
+            <UserComponent Class="m-2" Model="model" />
+        </Virtualize>
+    </div>
+}
+else
+{
+    <div class="flex items-center justify-center">
+        <Loading />
+    </div>
+}
+
+<Dialog @ref="dialog" Class="w-1/3" Title="Create User">
+    <CreateUserForm Created="user => models?.Add(user)" Canceled="async ()=> await dialog.HideAsync()" />
+</Dialog>
+
+@code{
+    private Error? error;
+    private List<UserModel>? models;
+
+    private Dialog dialog = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        (await service.GetAllAsync())
+        .Switch(
+            r => models = new(r),
+            e => error = e
+        );
+
+        StateHasChanged();
+    }
+}

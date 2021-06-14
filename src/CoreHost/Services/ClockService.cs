@@ -1,16 +1,17 @@
 ﻿using LetItGrow.Services;
-using NodaTime;
+using System;
 
 namespace LetItGrow.CoreHost.Services
 {
     /// <summary>
-    /// todo: summary
+    /// Implementation of <see cref="IClockService"/>
     /// </summary>
     public class ClockService : IClockService
     {
-        public Instant GetCurrentInstant()
+        /// <inheritdoc/>
+        public DateTimeOffset GetNow()
         {
-            return SystemClock.Instance.GetCurrentInstant();
+            return DateTimeOffset.UtcNow;
         }
     }
 }

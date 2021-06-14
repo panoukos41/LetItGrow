@@ -3,36 +3,29 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
-    <RootNamespace>LetItGrow.UI.Web</RootNamespace>
+    <RootNamespace>LetItGrow.UI</RootNamespace>
     <AssemblyName>LetItGrow.UI.Web</AssemblyName>
-    <!--<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>-->
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Abstractions/Abstractions.csproj" />
-    <ProjectReference Include="../UI/UI.csproj" />
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+    <ProjectReference Include="..\CoreWeb\CoreWeb.csproj" />
+    <ProjectReference Include="..\UI\UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Accelist.FluentValidation.Blazor" Version="4.0.0" />
-    <PackageReference Include="BlazorComponentUtilities" Version="1.6.0" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.1" PrivateAssets="all" />
+    <PackageReference Include="BlazorPro.BlazorSize" Version="3.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web.Extensions" Version="5.0.0-preview9.20513.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
-    <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0" />
-    <PackageReference Include="ReactiveUI.Blazor" Version="13.0.27" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="5.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.6" PrivateAssets="all" />
+    <PackageReference Include="Plotly.Blazor" Version="2.0.0" />
   </ItemGroup>
 
   <Target Name="CompileCss" Condition="'$(Configuration)' == 'Release'" BeforeTargets="Build">
     <Message Importance="high" Text="Compiling publish css" />
-    <Exec Command="npx yarn" />
-    <Exec Command="npm run csspublish" />
+    <Exec Command="yarn" />
+    <Exec Command="yarn run csspublish" />
   </Target>
 </Project>

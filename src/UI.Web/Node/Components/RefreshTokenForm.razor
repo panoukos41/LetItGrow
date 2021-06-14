@@ -1,0 +1,64 @@
+﻿@using LetItGrow.Microservice.Group.Models
+@using Unit = MediatR.Unit
+@inject INodeService nodeService
+
+<div>
+    <h1 class="text-center">Refresh this nodes token?</h1>
+    
+    <hr />
+
+    <h2 class="text-center">It won't be possible to undo this action!</h2>
+
+    <div class="mt-5 flex justify-center space-x-2">
+        <SpinnerButton Class="btn text-gray-100" Command="form.Command">Refresh</SpinnerButton>
+        <button type="button" class="btn-cancel text-gray-100" @onclick="OnCancelClick">Cancel</button>
+    </div>
+</div>
+
+@code{
+    private FormContext<RefreshToken, RefreshTokenValidator, Result<RefreshModel>> form;
+    private NodeModel _node { get; set; } = new();
+    private string? message;
+
+    [Parameter]
+    public EventCallback OnCancelClick { get; set; }
+
+    [Parameter]
+    public NodeModel Node 
+    { 
+        get => _node;
+        set
+        {
+            _node = value;
+            form.Reset(new RefreshToken(_node));
+            StateHasChanged();
+        }
+    }
+
+    public RefreshTokenForm() => form = new(Execute, Result);
+
+    private bool CanExecute() 
+    {
+        var send = _node.GroupId is { Length: > 0 };
+
+        message = send ? null : "No group to remove";
+        return send;
+    }
+
+    private Task<Result<RefreshModel>> Execute(RefreshToken request)
+    {
+        message = null;
+        return nodeService.Refresh(request);
+    }
+
+    private void Result(Result<RefreshModel> r) => r.Switch(
+        result =>
+        {
+            message = "Refreshed token";
+        },
+        error =>
+        {
+            message = error.Title;
+        });
+
+}

@@ -1,0 +1,63 @@
+﻿@using LetItGrow.Microservice.Group.Models
+@inject INodeService nodeService
+
+<div>
+    <h2 class="text-center">@(message is not null ? message : "Do you want to remove this node from the group?")</h2>
+    
+    <hr />
+
+    <div class="mt-5 flex justify-center space-x-2">
+        <SpinnerButton Class="btn text-gray-100" Command="form.Command">Remove</SpinnerButton>
+        <button type="button" class="btn-cancel text-gray-100" @onclick="OnExecuted">Cancel</button>
+    </div>
+</div>
+
+@code{
+    private FormContext<GroupRemove, GroupRemoveValidator, Result<ModelUpdate>> form;
+    private NodeModel _node { get; set; } = new();
+    private string? message;
+
+    [Parameter]
+    public EventCallback OnExecuted { get; set; }
+
+    [Parameter]
+    public NodeModel Node 
+    { 
+        get => _node;
+        set
+        {
+            _node = value;
+            form.Reset(new GroupRemove(_node));
+            CanExecute();
+            StateHasChanged();
+        }
+    }
+
+    public GroupRemoveForm() => form = new(Execute, Result, CanExecute);
+
+    private bool CanExecute() 
+    {
+        var send = _node.GroupId is { Length: > 0 };
+
+        message = send ? null : "No group to remove";
+        return send;
+    }
+
+    private Task<Result<ModelUpdate>> Execute(GroupRemove request)
+    {
+        message = null;
+        return nodeService.GroupRemove(request);
+    }
+
+    private void Result(Result<ModelUpdate> r) => r.Switch(
+        result =>
+        {
+            message = "Group Removed!";
+            _ = OnExecuted.InvokeAsync();
+        },
+        error =>
+        {
+            message = error.Title;
+        });
+
+}

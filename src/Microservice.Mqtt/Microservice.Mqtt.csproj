@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>LetItGrow.Microservice</RootNamespace>
+    <AssemblyName>LetItGrow.Microservice.Mqtt</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreHost\CoreHost.csproj" />
+    <ProjectReference Include="..\Microservice.Infrastructure\Microservice.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MQTTnet.AspNetCore" Version="3.0.15" />
+    <PackageReference Include="MQTTnet.AspNetCore.AttributeRouting" Version="0.3.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="*.yaml" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

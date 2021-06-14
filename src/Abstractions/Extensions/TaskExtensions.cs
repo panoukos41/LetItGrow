@@ -29,5 +29,37 @@ namespace System.Threading.Tasks
                     await tupple.Item2,
                     await tupple.Item3
             )).GetAwaiter();
+
+        /// <summary>
+        /// This will ignore all exceptions of the task but will still await for it to finish.
+        /// </summary>
+        /// <param name="task">The task to ignore.</param>
+        /// <param name="exceptionHandler">An action to execute to log the exception.</param>
+        /// <returns>A continuation task that marks the completion of the previous task.</returns>
+        public static Task Ignore(this Task task, Action<Exception>? exceptionHandler = null) =>
+            task.ContinueWith(tsk =>
+            {
+                if (tsk.IsFaulted)
+                {
+                    exceptionHandler?.Invoke(tsk.Exception!);
+                }
+            });
+
+        /// <summary>
+        /// This will execute the task, will return immediately and ignore all exceptions.
+        /// </summary>
+        /// <param name="task">The task to forget.</param>
+        /// <param name="exceptionHandler">An action to execute to log the exception.</param>
+        public static async void Forget(this Task task, Action<Exception>? exceptionHandler = null)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception ex)
+            {
+                exceptionHandler?.Invoke(ex);
+            }
+        }
     }
 }

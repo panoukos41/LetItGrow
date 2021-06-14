@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48;net5.0</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>LetItGrow.NodeIot</RootNamespace>
+    <AssemblyName>LetItGrow.NodeIot.Runner</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NodeIot.Core\NodeIot.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="*.yaml" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

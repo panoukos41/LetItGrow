@@ -1,0 +1,29 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData.SetTitle("LetItGrow - Log in");
+}
+
+<form class="content p-10 rounded shadow-2xl" id="account" method="post">
+    <div>
+        <label asp-for="Input.Username"></label>
+        <input asp-for="Input.Username"/>
+        <span asp-validation-for="Input.Username"></span>
+    </div>
+    <div class="mt-5">
+        <label asp-for="Input.Password"></label>
+        <input asp-for="Input.Password"/>
+        <span asp-validation-for="Input.Password"></span>
+    </div>
+    <div class="mt-5">
+        <label asp-for="Input.RememberMe">@Html.DisplayNameFor(m => m.Input.RememberMe)</label>
+        <input asp-for="Input.RememberMe" class="ml-2"/>
+    </div>
+    <div class="mt-10 flex items-center justify-center">
+        <button type="submit" class="btn text-gray-50 w-40">Log in</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,211 @@
+﻿@inject INodeService nodeService
+
+<EditForm EditContext="form">
+    <FluentValidationValidator Validator="form.Validator" />
+
+    <fieldset>
+        <legend>Update Node</legend>
+
+        @if (messages is not null)
+        {
+            <p><u><b>@messages</b></u></p>
+        }
+        <div>
+            <label>Name</label>
+            <InputText @bind-Value="form.Request.Name" />
+            <ValidationMessage class="block text-red-400" For="() => form.Request.Name" />
+        </div>
+
+        <div>
+            <label>Description</label>
+            <InputTextArea @bind-Value="form.Request.Description" />
+            <ValidationMessage For="() => form.Request.Description" />
+        </div>
+    </fieldset>
+</EditForm>
+
+<fieldset>
+    <legend>Settings</legend>
+
+    @if (Node.Type == NodeType.Irrigation)
+    {
+        <EditForm Model="iSettings">
+            <FluentValidationValidator Validator="new IrrigationSettingsValidator()" />
+
+            <label>PollInterval</label>
+            <InputNumber @bind-Value="iSettings.PollInterval" />
+            <ValidationMessage For="() => iSettings.PollInterval" />
+        </EditForm>
+    }
+    else if (Node.Type == NodeType.Measurement)
+    {
+        <EditForm Model="mSettings">
+            <FluentValidationValidator Validator="new MeasurementSettingsValidator()" />
+
+            <label>PollInterval</label>
+            <InputNumber @bind-Value="mSettings.PollInterval" />
+            <ValidationMessage For="() => mSettings.PollInterval" />
+        </EditForm>
+    }
+</fieldset>
+
+<div class="flex justify-end space-x-2">
+    <SpinnerButton Class="btn text-gray-100" Command="form.Command">Update</SpinnerButton>
+    <button type="button" class="btn-cancel text-gray-100" @onclick="OnCancelClick">Cancel</button>
+</div>
+
+@code{
+    private FormContext<UpdateNode, UpdateNodeValidator, Result<ModelUpdate>> form;
+    private IrrigationSettings iSettings = new();
+    private MeasurementSettings mSettings = new();
+    private NodeModel _node = new();
+    private string? messages;
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnCancelClick { get; set; }
+
+    [Parameter]
+    public NodeModel Node
+    {
+        get => _node;
+        set => SetNode(value);
+    }
+
+    public UpdateNodeForm()
+    {
+        form = new(Execute, Result, ShouldSentRequest);
+    }
+
+    public void SetNode(NodeModel node)
+    {
+        _node = node;
+        messages = null;
+        form.Reset(GenerateForm());
+
+        if (_node.Type == NodeType.Irrigation)
+        {
+            iSettings = Node.Settings.To<IrrigationSettings>();
+        }
+        else if (_node.Type == NodeType.Measurement)
+        {
+            mSettings = Node.Settings.To<MeasurementSettings>();
+        }
+
+        StateHasChanged();
+    }
+
+    private Task<Result<ModelUpdate>> Execute(UpdateNode request) =>
+        nodeService.Update(GenerateRequest());
+
+    private void Result(Result<ModelUpdate> r) => r.Switch(
+        result =>
+        {
+            messages = "Node updated!";
+            StateHasChanged();
+        },
+        error =>
+        {
+            messages = error.Title;
+            Console.WriteLine(error);
+        });
+
+    private UpdateNode GenerateForm() => new()
+    {
+        Id = Node.Id,
+        Type = Node.Type,
+        ConcurrencyStamp = Node.ConcurrencyStamp,
+        Name = Node.Name,
+        Description = Node.Description,
+        Settings = Node.Settings
+    };
+
+    public bool ShouldSentRequest()
+    {
+        var form = this.form.Request;
+        var node = Node;
+        var send = false;
+
+        if (form.Name is { Length: > 0 } && (
+            form.Name != node.Name ||
+            form.Description != node.Description))
+        {
+            send = true;
+        }
+        // Irrigation code block.
+        {
+            if (send is false &&
+                form.Type is NodeType.Irrigation &&
+                node.Type is NodeType.Irrigation)
+            {
+                var fSettings = iSettings;
+                var nSettings = node.Settings.ToNullable<IrrigationSettings>();
+
+                send = fSettings != nSettings;
+            }
+        }
+        // Measurement code block.
+        {
+            if (send is false &&
+                form.Type is NodeType.Measurement &&
+                node.Type is NodeType.Measurement)
+            {
+                var fSettings = mSettings;
+                var nSettings = node.Settings.ToNullable<MeasurementSettings>();
+
+                send = fSettings != nSettings;
+            }
+        }
+
+        messages = send ? null : "Change something to send!";
+        StateHasChanged();
+        return send;
+    }
+
+    public UpdateNode GenerateRequest()
+    {
+        var form = this.form.Request;
+        var node = Node;
+
+        var request = new UpdateNode
+        {
+            Id = node.Id,
+            ConcurrencyStamp = node.ConcurrencyStamp,
+            Type = form.Type,
+        };
+        if (form.Name != node.Name)
+        {
+            request.Name = form.Name;
+        }
+        if (form.Description != node.Description)
+        {
+            request.Description = form.Description;
+        }
+        // Irrigation code block.
+        {
+            if (request.Type is NodeType.Irrigation)
+            {
+                var fSettings = iSettings;
+                var nSettings = node.Settings.ToNullable<IrrigationSettings>();
+
+                if (fSettings != nSettings)
+                {
+                    request.Settings = fSettings.ToJsonDocument();
+                }
+            }
+        }
+        // Measurement code block.
+        {
+            if (request.Type is NodeType.Measurement)
+            {
+                var fSettings = mSettings;
+                var nSettings = node.Settings.ToNullable<MeasurementSettings>();
+
+                if (fSettings != nSettings)
+                {
+                    request.Settings = fSettings.ToJsonDocument();
+                }
+            }
+        }
+        return request;
+    }
+}

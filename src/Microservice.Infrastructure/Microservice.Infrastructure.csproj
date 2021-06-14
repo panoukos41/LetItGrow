@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>LetItGrow.Microservice</RootNamespace>
+    <AssemblyName>LetItGrow.Microservice.Infrastructure</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreHost\CoreHost.csproj" />
+    <ProjectReference Include="..\Microservice.Core\Microservice.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CouchDB.NET" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ddoc.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  
+</Project>

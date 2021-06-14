@@ -1,0 +1,77 @@
+﻿@using System.Reactive.Subjects
+@inherits BaseComponent
+@implements IAsyncDisposable
+@inject IJSRuntime js
+
+<dialog id="@_id" class="@Class">
+    @if (Title is not null)
+    {
+        <header>@Title</header>
+    }
+    @if (ChildContent is not null)
+    {
+        @ChildContent
+    }
+</dialog>
+
+@code{
+    private readonly string _id = $"dialog-{Guid.NewGuid():N}";
+    private readonly Subject<bool> _whenVisible = new();
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    public bool Visible { get; private set; }
+
+    public IObservable<bool> WhenVisible => _whenVisible;
+
+    private readonly Lazy<Task<IJSObjectReference>> dialog;
+
+    public Dialog()
+    {
+        dialog = new(() => js.InvokeAsync<IJSObjectReference>("document.getElementById", _id).AsTask());
+    }
+
+    public async ValueTask ShowAsync()
+    {        
+        await (await dialog.Value).InvokeVoidAsync("showModal");
+
+        Visible = true;
+        _whenVisible.OnNext(true);
+    }
+
+    public async ValueTask HideAsync()
+    {
+        await (await dialog.Value).InvokeVoidAsync("close");
+
+        Visible = false;
+        _whenVisible.OnNext(false);
+    }
+
+    public async ValueTask<bool> ToggleAsync()
+    {
+        if (!Visible)
+            await ShowAsync();
+        else
+            await HideAsync();
+
+        return Visible;
+    }
+
+    public async void Show() => await ShowAsync();
+
+    public async void Hide() => await HideAsync();
+
+    public async void Toggle() => await ToggleAsync();
+
+    public async ValueTask DisposeAsync()
+    {
+        if (dialog.IsValueCreated)
+        {
+            await (await dialog.Value).DisposeAsync();
+        }
+    }
+}

@@ -1,0 +1,81 @@
+﻿@using LetItGrow.Microservice.Group.Models
+@inject INodeService nodeService
+@inject IGroupService groupService
+
+<EditForm EditContext="form">
+    <FluentValidationValidator Validator="form.Validator" />
+
+    <fieldset>
+        <legend>Change group</legend>
+
+        <div>
+            <label>Groups</label>
+            <InputSelect @bind-Value="form.Request.GroupId">
+                @foreach (var group in groupService.Cache)
+                {
+                    <option value="@group.Id">@group.Name</option>
+                }
+            </InputSelect>
+        </div>
+    </fieldset>
+</EditForm>
+
+<div class="flex justify-end space-x-2">
+    <SpinnerButton Class="btn text-gray-100" Command="form.Command">Add</SpinnerButton>
+    <button type="button" class="btn-cancel text-gray-100" @onclick="OnCancelClick">Cancel</button>
+</div>
+
+@code{
+    private FormContext<GroupAdd, GroupAddValidator, Result<ModelUpdate>> form;
+    private NodeModel _node { get; set; } = new();
+    private string? message;
+
+    [Parameter]
+    public EventCallback OnCancelClick { get; set; }
+
+    [Parameter]
+    public NodeModel Node 
+    { 
+        get => _node;
+        set
+        {
+            _node = value;
+            form.Reset(new GroupAdd
+            {
+                Id = _node.Id,
+                ConcurrencyStamp = _node.ConcurrencyStamp,
+                GroupId = _node.GroupId ?? ""
+            });
+            StateHasChanged();
+        }
+    }
+
+    public GroupAddForm() => form = new(Execute, Result, CanExecute);
+
+    private bool CanExecute() 
+    {
+        var send =
+            form.Request.GroupId is { Length: > 0 } &&
+            form.Request.GroupId != _node.GroupId;
+
+        message = send ? null : "Choose a different group!";
+        return send;
+    }
+
+    private Task<Result<ModelUpdate>> Execute(GroupAdd request)
+    {
+        message = null;
+        return nodeService.GroupAdd(request);
+    }
+
+    private void Result(Result<ModelUpdate> r) => r.Switch(
+        result =>
+        {
+            message = "Group Changed!";
+        },
+        error =>
+        {
+            message = error.Title;
+        });
+
+}

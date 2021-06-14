@@ -1,7 +1,7 @@
-@using LetItGrow.UI.Web.Layout
+@using LetItGrow.UI.Common.Layouts
 
 <CascadingAuthenticationState>
-    <Router AppAssembly="typeof(Program).Assembly">
+    <Router AppAssembly="typeof(MainLayout).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
                 <NotAuthorized>

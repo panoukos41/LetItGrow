@@ -1,0 +1,28 @@
+{
+  "name": "identity",
+  "description": "",
+  "license": "",
+  "repository": "",
+  "devDependencies": {
+    "autoprefixer": "^10.0.2",
+    "cssnano": "^5.0.1",
+    "postcss": "^8.2.1",
+    "postcss-cli": "^8.3.0",
+    "postcss-import": "^14.0.1",
+    "tailwindcss": "^2.1.1"
+  },
+  "postcss": {
+    "plugins": {
+      "postcss-import": {},
+      "tailwindcss": {},
+      "autoprefixer": {},
+      "cssnano": {}
+    }
+  },
+  "scripts": {
+    "csswatch": "postcss ./wwwroot/app.css -o ./wwwroot/app.min.css --watch",
+    "cssbuild": "postcss ./wwwroot/app.css -o ./wwwroot/app.min.css",
+    "csspublish": "set NODE_ENV=production&& postcss ./wwwroot/app.css -o ./wwwroot/app.min.css"
+  },
+  "version": "0.1.0"
+}

@@ -1,0 +1,23 @@
+﻿@inherits BaseComponent
+
+<div class="@css">
+    @* todo: Show roles as pills *@
+    <h2 class="my-1" >@Model.UserName</h2>
+    @foreach(var role in Model.Roles)
+    {
+        <span class="my-1 px-4 py-1 rounded-xl border bg-blue-500 text-gray-100">@role.Name</span>
+    }
+</div>
+
+@code{
+    [Parameter]
+    public UserModel Model { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        if (Model is null) throw new ArgumentNullException(nameof(Model));
+
+        css = CreateCss("border shadow p-2")
+            .AddClass(Class);
+    }
+}

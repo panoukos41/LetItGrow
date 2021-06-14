@@ -1,0 +1,59 @@
+﻿@using LetItGrow.Identity.User.Commands
+@inherits BaseComponent
+@inject UserService service
+
+<EditForm class="@Class" EditContext="form">
+    <FluentValidationValidator Validator="form.Validator" />
+
+    <div>
+        <label>UserName</label>
+        <InputText placeholder="Username" @bind-Value="form.Request.UserName" />
+        <ValidationMessage For="() => form.Request.UserName" />
+    </div>
+
+    <div>
+        <label>Password</label>
+        <InputText type="password" placeholder="Password" @bind-Value="form.Request.Password" />
+        <ValidationMessage For="() => form.Request.Password" />
+    </div>
+
+    <ErrorComponent Error="error" />
+
+    <div class="mt-4 flex justify-end space-x-2">
+        <SpinnerButton Class="btn text-gray-100" TResult="Unit" Command="form">Create</SpinnerButton>
+        <button type="button" class="btn-cancel text-gray-100" @onclick="Canceled!">Cancel</button>
+    </div>
+</EditForm>
+
+@code{
+    [Parameter]
+    public Action<UserModel>? Created { get; set; }
+
+    [Parameter]
+    public Action? Canceled { get; set; }
+
+    private FormContext<CreateUser, CreateUserValidator, Result<UserModel>> form;
+
+    private Error? error { get; set; }
+
+    public CreateUserForm()
+    {
+        form = new(
+            async request => await service.CreateAsync(request),
+            result => result.Switch(Success, Failure));
+
+        form.Command.Subscribe(x => StateHasChanged());
+    }
+
+    private void Success(UserModel model)
+    {
+        Created?.Invoke(model);
+        form.Reset();
+        error = null;
+    }
+
+    private void Failure(Error error)
+    {
+        this.error = error;
+    }
+}

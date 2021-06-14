@@ -3,16 +3,14 @@
 namespace LetItGrow.Services
 {
     /// <summary>
-    /// todo: summary
+    /// A service to generate 11 character primary keys.
     /// </summary>
     public interface IPrimaryKeyService
     {
         /// <summary>
         /// Generates an 11 character string suitable for use as a primary key.
         /// </summary>
-        /// <returns>A string for use as a primary key.</returns>
-        string GetNew() =>
-            // Removes "." from the string befor it returns.
-            Path.GetRandomFileName().Remove(8, 1);
+        /// <returns>A 11 character string for use as a primary key.</returns>
+        string Create();
     }
 }

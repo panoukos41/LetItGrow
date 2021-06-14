@@ -1,0 +1,29 @@
+﻿@inject ThemeJs theme
+
+<header class="content header flex justify-between">
+    <MenuBar />
+
+    <LoginDisplay Class="ml-auto" />
+
+    <button class="px-4" @onclick="Toggle">
+        <i class="bi @(IsLight ? "bi-moon-fill" : "bi-sun")"></i>
+    </button>
+</header>
+
+@code{
+    private bool IsLight = false;
+
+    private async void Toggle()
+    {
+        IsLight = await theme.Toggle() == ThemeJs.Light;
+        StateHasChanged();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        IsLight = await theme.GetTheme() == ThemeJs.Light;
+        StateHasChanged();
+    }
+}

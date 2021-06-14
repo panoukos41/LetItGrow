@@ -1,0 +1,202 @@
+﻿@page "/node/{Id}"
+@using Plotly.Blazor;
+@using Plotly.Blazor.LayoutLib;
+@using LetItGrow.UI.Node.Extensions
+@using Title = Microsoft.AspNetCore.Components.Web.Extensions.Head.Title;
+@inherits ReactiveComponentBase<NodeViewModel>
+@inject INodeService nodeService
+@inject IJSRuntime js
+
+@if (VM.Loading)
+{
+    <Title Value="@($"LetItGrow Node - {Id}")"></Title>
+    <div class="h-full w-full flex items-center justify-center">
+        <Loading />
+    </div>
+}
+else if (VM.NotFound)
+{
+    <NotFound />
+}
+else
+{
+    <Title Value="@($"LetItGrow Node - {VM.Node.Name}")"></Title>
+
+    <div class="pl-2 h-full flex flex-col">
+        <div class="flex justify-between">
+            <div class="flex-grow">
+                <div class="flex items-center">
+                    <h2 class="my-1 mr-2">@VM.Node.Name</h2>
+                    <i class="bi bi-square-fill transition-colors duration-700 @(VM.Node.Connected ? "text-green-400" : "text-red-500")"></i>
+                </div>
+                @if(VM.Node.GroupId is { } groupId)
+                {
+                    <a class="my-1 text-xs" href="/group/@groupId">Group: @groupId</a>
+                }
+            </div>
+            <div class="grid grid-rows-2 grid-flow-col">
+                @{ const string btnCss = "text-gray-100 text-xs px-3 py-2 w-30"; }
+
+                <button class="btn @btnCss" @onclick="() => tokenDialog.Show()">
+                    <i class="bi bi-info"></i> Show Token
+                </button>
+                <button class="btn-update @btnCss" @onclick="() => updateDialog.Show()">
+                    <i class="bi bi-exclamation-circle"></i> Update
+                </button>
+                <button class="btn-update @btnCss" @onclick="() => refreshTokenDialog.Show()">
+                    <i class="bi bi-arrow-repeat"></i> Refresh Token
+                </button>
+                <button class="btn-update @btnCss" @onclick="() => groupAddDialog.Show()">
+                    <i class="bi bi-patch-exclamation"></i> Change Group
+                </button>
+                <button class="btn-cancel @btnCss" @onclick="() => groupRemoveDialog.Show()">
+                    <i class="bi bi-x"></i> Remove Group
+                </button>
+                <button class="btn-cancel @btnCss" @onclick="() => nodeDeleteDialog.Show()">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+
+        <hr class="m-2" />
+        
+        <p class="my-0">@(VM.Node.Description ?? "No Description")</p>
+        
+        <hr class="m-2" />
+        
+        <p class="text-xs font-mono mt-1 mb-0">Created by '@VM.Node.CreatedBy': '@VM.Node.CreatedAt.LocalDateTime.ToString("g")'</p>
+        <p class="text-xs font-mono mt-0 mb-1">Updated by '@VM.Node.UpdatedBy': '@VM.Node.UpdatedAt.LocalDateTime.ToString("g")'</p>
+        
+        <hr class="m-2" />
+
+        <div class="p-2 flex items-center justify-center">
+            <SpinnerButton Command="VM.LoadData">
+                Load @VM.Node.Type.ToString()s
+            </SpinnerButton>
+
+            <select class="w-auto" @bind="VM.SearchOptions.Days">
+                @foreach(var o in SearchOptions.All)
+                {
+                    <option value="@o.Days">@o</option>
+                }
+            </select>
+        </div>
+
+        @if (VM.Data.Value is not null)
+        {
+            <PlotlyChart style="min-height: 500px; width: 100%" @ref="chart"
+                Config="new() { Responsive = true }"
+                Layout="new() { HoverMode = HoverModeEnum.Closest }" />
+        }
+    </div>
+
+    <Dialog @ref="tokenDialog">
+        @{ 
+            const string codeCss = "p-2 text-lg h-10 m-1 text-center";
+            const string btnCss = "btn text-gray-100 h-10 w-14 p-1 m-1";
+            var id = VM.Node.Id;
+            var type = VM.Node.Type.ToString();
+            var token = VM.Node.Token;
+        }
+
+        <div class="flex flex-wrap justify-center">
+            <code class="w-20 @codeCss">Id</code>
+
+            <code class="flex-grow @codeCss">@id</code>
+
+            <button class="@btnCss" @onclick="() => CopyToClipboard(id)">
+                <i class="bi bi-clipboard"></i>
+            </button>
+        </div>
+
+        <div class="flex flex-wrap justify-center">
+            <code class="w-20 truncate @codeCss">Type</code>
+
+            <code class="flex-grow @codeCss">@type</code>
+
+            <button class="@btnCss" @onclick="() => CopyToClipboard(type)">
+                <i class="bi bi-clipboard"></i>
+            </button>
+        </div>
+
+        <div class="flex flex-wrap justify-center">
+            <code class="w-20 @codeCss">Token</code>
+
+            <code class="flex-grow @codeCss">@token</code>
+
+            <button class="@btnCss" @onclick="() => CopyToClipboard(token)">
+                <i class="bi bi-clipboard"></i>
+            </button>
+        </div>
+
+        <div class="flex justify-center mt-5">
+            @{ var confTxt = $"ClientId: \"{id}\"\nType: \"{type}\"\nToken: \"{token}\""; }
+
+            <button class="btn text-gray-100" @onclick="() => CopyToClipboard(confTxt)">
+                <i class="bi bi-clipboard"></i> Copy for Configuration
+            </button>
+        </div>
+
+        <div class="flex justify-center mt-5">
+            <button class="btn-cancel text-gray-100" @onclick="() => tokenDialog.Hide()">
+                <i class="bi bi-x"></i> CLOSE
+            </button>
+        </div>
+    </Dialog>
+
+    <Dialog @ref="updateDialog" Class="w-11/12 lg:w-1/3">
+        <UpdateNodeForm Node="VM.Node" OnCancelClick="() => updateDialog.Hide()" />
+    </Dialog>
+
+    <Dialog @ref="refreshTokenDialog">
+        <RefreshTokenForm Node="VM.Node" OnCancelClick="() => refreshTokenDialog.Hide()" />
+    </Dialog>
+
+    <Dialog @ref="groupAddDialog" Class="w-11/12 lg:w-1/3">
+         <GroupAddForm Node="VM.Node" OnCancelClick="() => groupAddDialog.Hide()" />
+    </Dialog>
+    
+    <Dialog @ref="groupRemoveDialog" Class="w-11/12 lg:w-1/3">
+         <GroupRemoveForm Node="VM.Node" OnExecuted="() => groupRemoveDialog.Hide()" />
+    </Dialog>
+    
+    <Dialog @ref="nodeDeleteDialog" Class="w-11/12 lg:w-1/3">
+         <DeleteNodeForm Node="VM.Node" OnCancelClick="() => nodeDeleteDialog.Hide()" />
+    </Dialog>
+}
+
+@code{
+    private Dialog updateDialog = null!;
+    private Dialog refreshTokenDialog = null!;
+    private Dialog groupAddDialog = null!;
+    private Dialog groupRemoveDialog = null!;
+    private Dialog nodeDeleteDialog = null!;
+    private Dialog tokenDialog = null!;
+    private PlotlyChart chart = null!;
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    public NodeViewModel VM { get => ViewModel!; set => ViewModel = value; }
+
+    private async Task CopyToClipboard(string text)
+    {
+        await js.InvokeVoidAsync("navigator.clipboard.writeText", text);
+        await js.InvokeVoidAsync("alert", "Copied!");
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        VM = new(Id, nodeService);
+        VM.Activator.Activate();
+
+        VM.WhenAnyValue(x => x.Data)
+            .Where(d => d.Value is not null)
+            .Subscribe(d =>
+            {
+                chart!.Data = d.Match(i => i.ToTraceList(), m => m.ToTraceList());
+                Observable.FromAsync(chart.React).Subscribe(_ => StateHasChanged());
+            });
+    }
+}

@@ -1,0 +1,8 @@
+Urls: http://*:5030;https://*:5031
+
+Services:
+  CouchDb: admin;admin;http://127.0.0.1:5984;letitgrow_webapi
+
+#Serilog:
+#  MinimumLevel:
+#    Default: Verbose

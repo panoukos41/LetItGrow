@@ -1,0 +1,50 @@
+﻿@using LetItGrow.Microservice.Group.Models
+@using Unit = MediatR.Unit
+@inject INodeService nodeService
+@inject NavigationManager nav
+
+<div>
+    <h1 class="text-center">Delete this node?</h1>
+    
+    <hr />
+
+    <h2 class="text-center">It won't be possible to undo this action!</h2>
+
+    <div class="mt-5 flex justify-center space-x-2">
+        <SpinnerButton Class="btn text-gray-100" Command="form.Command">Delete</SpinnerButton>
+        <button type="button" class="btn-cancel text-gray-100" @onclick="OnCancelClick">Cancel</button>
+    </div>
+</div>
+
+@code{
+    private FormContext<DeleteNode, DeleteNodeValidator, Result<Unit>> form;
+    private NodeModel _node { get; set; } = new();
+    private string? message;
+
+    [Parameter]
+    public EventCallback OnCancelClick { get; set; }
+
+    [Parameter]
+    public NodeModel Node 
+    { 
+        get => _node;
+        set
+        {
+            _node = value;
+            form.Reset(new DeleteNode(_node));
+            StateHasChanged();
+        }
+    }
+
+    public DeleteNodeForm() => form = new(Execute, Result);
+
+    private Task<Result<Unit>> Execute(DeleteNode request)
+    {
+        message = null;
+        return nodeService.Delete(request);
+    }
+
+    private void Result(Result<Unit> r) => r.Switch(
+        result => nav.NavigateTo("/"),
+        error => message = error.Title);
+}

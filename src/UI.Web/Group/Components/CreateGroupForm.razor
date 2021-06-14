@@ -1,0 +1,61 @@
+﻿@inject IGroupService groupService
+
+<EditForm EditContext="form">
+    <FluentValidationValidator Validator="form.Validator" />
+
+    <fieldset>
+        <legend>Creating Group</legend>
+
+        <div>
+            <label>Name</label>
+            <InputText @bind-Value="form.Request.Name" />
+            <ValidationMessage class="block text-red-400" For="() => form.Request.Name" />
+        </div>
+
+        <div>
+            <label>Description</label>
+            <InputTextArea rows="2" @bind-Value="form.Request.Description" />
+            <ValidationMessage For="() => form.Request.Description" />
+        </div>
+
+        <div>
+            <label>Type</label>
+            <InputSelect @bind-Value="form.Request.Type">
+                @foreach (var type in Enum.GetValues(typeof(GroupType)))
+                {
+                    <option value="@type">@type</option>
+                }
+            </InputSelect>
+            <ValidationMessage class="w-full" For="() => form.Request.Type" />
+        </div>
+    </fieldset>
+</EditForm>
+
+<div class="flex justify-end space-x-2">
+    <SpinnerButton Class="btn text-gray-100" Command="form.Command">Create</SpinnerButton>
+    <button type="button" class="btn-cancel text-gray-100" @onclick="OnCancelClick">Cancel</button>
+</div>
+
+@code{
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnCancelClick { get; set; }
+
+    private FormContext<CreateGroup, CreateGroupValidator, Result<GroupModel>> form;
+
+    public CreateGroupForm()
+    {
+        form = new(
+            request => groupService.Create(request),
+            result => result.Switch(Success, Failure));
+    }
+
+    protected void Success(GroupModel result)
+    {
+
+    }
+
+    protected void Failure(Error error)
+    {
+        Console.WriteLine(error);
+    }
+}

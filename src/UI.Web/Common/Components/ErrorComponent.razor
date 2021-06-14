@@ -1,0 +1,21 @@
+﻿@inherits BaseComponent
+
+@if (Error is not null)
+{
+    <div class="@css">
+        <h2 class="my-1">@Error.Title <span class="font-mono">(@Error.Status)</span></h2>
+        <p class="my-1">@Error.Detail</p>
+        @foreach(var (_, detail) in Error.Metadata)
+        {
+            <p class="my-1">@detail</p>
+        }
+    </div>
+}
+
+@code{
+    [Parameter]
+    public Error? Error { get; set; }
+
+    protected override void OnParametersSet() =>
+        css = CreateCss("error border rounded p-2 text-gray-100 bg-red-500").AddClass(Class);
+}

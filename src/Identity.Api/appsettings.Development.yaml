@@ -1,0 +1,11 @@
+﻿Urls: http://*:5020;https://*:5021
+
+Swagger: 
+  Enabled: true
+
+Services:
+  Blazor: https://localhost:5001
+  CouchDb: admin;admin;http://localhost:5984;letitgrow_identity
+
+Secrets:
+  JWT: DRjd/GnduI3Efzen9V9BvbNUfc/VKgXltV7Kbk9sMkY=

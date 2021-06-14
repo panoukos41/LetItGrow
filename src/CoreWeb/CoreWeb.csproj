@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>LetItGrow.CoreWeb</RootNamespace>
+    <AssemblyName>LetItGrow.CoreWeb</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\app.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\app.css" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BlazorComponentUtilities" Version="1.6.0" />
+    <PackageReference Include="Blazored.FluentValidation" Version="2.0.0" />
+    <PackageReference Include="FluentValidation" Version="10.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.6" />
+    <PackageReference Include="ReactiveUI.Blazor" Version="13.3.2" />
+  </ItemGroup>
+
+</Project>

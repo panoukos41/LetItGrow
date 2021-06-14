@@ -8,18 +8,31 @@ services:
       - port: 5001
         protocol: https
 
-  - name: identity
-    project: Identity/Identity.csproj
-    tags: [id]
-    replicas: 1
-    bindings:
-      - port: 6001
-        protocol: https
-
   - name: api
     project: Microservice.RestApi/Microservice.RestApi.csproj
-    tags: [api]
+    tags: [api, dev]
     replicas: 1
     bindings:
-      - port: 7001
+      - port: 5011
         protocol: https
+
+  - name: identity
+    project: Identity.Api/Identity.Api.csproj
+    tags: [id, dev]
+    replicas: 1
+    bindings:
+      - port: 5021
+        protocol: https
+
+  - name: mqtt
+    project: Microservice.Mqtt/Microservice.Mqtt.csproj
+    tags: [mqtt, dev]
+    replicas: 1
+    bindings:
+      - port: 5031
+        protocol: https
+
+  - name: worker
+    project: Microservice.Worker/Microservice.Worker.csproj
+    tags: [worker, dev]
+    replicas: 1

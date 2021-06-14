@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Mvc.ViewEngines
+@inject IWebHostEnvironment Environment
+@inject ICompositeViewEngine Engine
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>@ViewData.GetTitle()</title>
+    <base href="/" />
+    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.min.css" id="theme-stylesheet">
+    <link rel="stylesheet" href="app.min.css" />
+    <script src="_content/LetItGrow.CoreWeb/theme.js"></script>
+</head>
+<body>
+    <main role="main" class="h-screen flex items-center justify-center">
+        @RenderBody()
+    </main>
+
+    @*Image by <a href="https://pixabay.com/users/torstensimon-5039407/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2211587">torstensimon</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2211587">Pixabay</a>*@
+    @*
+    <footer class="mt-2 flex items-center justify-center">
+        <div class="content rounded-t bg-white">
+            <p class="text-gray-700 text-right">
+                &copy; 2020 - Identity - <a asp-area="" asp-page="Privacy">Privacy</a>
+            </p>
+        </div>
+    </footer>
+    *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

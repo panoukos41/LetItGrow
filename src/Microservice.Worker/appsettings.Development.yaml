@@ -1,0 +1,19 @@
+Services:
+  CouchDb: admin;admin;http://localhost:5984;letitgrow_webapi
+
+Serilog:
+  MinimumLevel:
+    Default: Information
+    Override:
+      Grpc: Warning
+      System: Warning
+      Microsoft: Warning
+      Microsoft.Hosting.Lifetime: Information
+      Microsoft.AspNetCore.SignalR: Information
+      Microsoft.Extensions.Diagnostics.HealthChecks: Warning
+
+  WriteTo:
+    - { Name: Console }
+    - { Name: File, Args: { Path: "logs/logs.txt", RollingInterval: Day } }
+
+Period: 1

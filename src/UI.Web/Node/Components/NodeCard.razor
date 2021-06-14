@@ -1,0 +1,26 @@
+﻿@inherits BaseComponent
+
+<a href="/node/@Node.Id" class="@css">
+    <div class="flex items-center justify-between">
+        <h3 class="font-mono my-1 font-bold">@Node.Name</h3>
+        <i class="bi bi-square-fill transition-colors duration-700 @(Node.Connected ? "text-green-400" : "text-red-500")"></i>
+    </div>
+    <p class="my-1 text-gray-500 truncate">@(Node.Description ?? "No Description.")</p>
+</a>
+
+@code{
+    [Parameter]
+    public NodeModel Node { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        css = CssBuilder
+            .Default("block p-2 w-52 h-20 rounded border border-solid")
+            .AddClass("transform duration-200 hover:-translate-y-px hover:shadow")
+            .AddClass("border-blue-400", Node.Type is NodeType.Irrigation)
+            .AddClass("border-green-400", Node.Type is NodeType.Measurement)
+            .AddClass("no-underline hover:no-underline")
+            .AddClass(Class);
+    }
+}

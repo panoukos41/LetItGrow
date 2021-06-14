@@ -1,0 +1,39 @@
+﻿@page "/app/{Id}"
+@attribute [Authorize(Roles = "Admin")]
+@inject ApplicationService service
+
+@if (Id is null)
+{
+    <NotFound />
+}
+else if (error is not null)
+{
+    <ErrorComponent Error="error" />
+}
+else if (model is not null)
+{
+    <ApplicationComponent Model="model" />
+}
+else
+{
+    <Loading />
+}
+
+@code{
+    [Parameter]
+    public string? Id { get; set; }
+
+    private Error? error;
+    public ApplicationModel? model;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || Id is null) return;
+
+        (await service.GetAsync(Id))
+        .Switch(
+            r => model = r,
+            e => error = e
+        );
+    }
+}

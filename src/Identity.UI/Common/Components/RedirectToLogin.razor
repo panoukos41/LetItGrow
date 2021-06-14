@@ -1,0 +1,12 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Configuration
+@inject NavigationManager nav
+@inject IConfiguration conf
+
+@code{
+    protected override void OnInitialized()
+    {
+        var url = conf.GetValue<string>("openid:Authority", "https://localhost:5021").TrimEnd('/');
+        nav.NavigateTo($"{url}/account/login", true);
+    }
+}

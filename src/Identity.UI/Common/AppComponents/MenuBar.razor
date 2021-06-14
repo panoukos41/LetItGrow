@@ -1,0 +1,49 @@
+﻿@inject NavigationManager nav
+
+<div>
+<AuthorizeView Roles="Admin">
+<Authorized>
+<MediaQuery Media="@BreakPointsCss.sm">
+<Matched>
+    <button class="@btn" @onclick="() => nav.NavigateTo(Home)">
+        <i class="bi bi-house-fill"></i>
+    </button>
+    <button class="@btn" @onclick="() => nav.NavigateTo(Role)">Roles</button>
+    <button class="@btn" @onclick="() => nav.NavigateTo(User)">Users</button>
+    <button class="@btn" @onclick="() => nav.NavigateTo(Apps)">Apps</button>
+</Matched>
+<Unmatched>
+    <button class="@btn" @onclick="() => dialog.Toggle()">
+        <i class="bi bi-three-dots"></i>
+    </button>
+    
+    <Dialog @ref="dialog" Class="w-1/2 bg-transparent">
+    <div class="flex flex-col items-center justify-center">
+        <button class="@btn shadow my-2 w-full" @onclick="() => nav.NavigateTo(Home)">Home</button>
+        <button class="@btn shadow my-2 w-full" @onclick="() => nav.NavigateTo(Role)">Roles</button>
+        <button class="@btn shadow my-2 w-full" @onclick="() => nav.NavigateTo(User)">Users</button>
+        <button class="@btn shadow my-2 w-full" @onclick="() => nav.NavigateTo(Apps)">Apps</button>
+        <hr />
+        <button class="@btn shadow mt-2 w-full btn-cancel" @onclick="() => dialog.Hide()">Close</button>
+    </div>
+    </Dialog>
+</Unmatched>
+</MediaQuery>
+</Authorized>
+
+<NotAuthorized>
+    <button class="@btn" @onclick="() => nav.NavigateTo(Home)">
+        <i class="bi bi-house-fill"></i>
+    </button>
+</NotAuthorized>
+</AuthorizeView>
+</div>
+
+@code{
+    private Dialog dialog = null!;
+    private const string btn = "ml-1 py-2 px-3";
+    private const string Home = "/";
+    private const string Role = "role";
+    private const string User = "user";
+    private const string Apps = "app";
+}

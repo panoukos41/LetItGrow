@@ -1,0 +1,16 @@
+﻿@inherits LayoutComponentBase
+@using LetItGrow.Identity.Common.AppComponents
+@using LetItGrow.Identity.Common.Components
+
+<AuthorizeView>
+<NotAuthorized>
+    <RedirectToLogin />
+</NotAuthorized>
+
+<Authorized>
+    <MediaQueryList>
+        <Header />
+        <Main ChildeContent="Body!" />
+    </MediaQueryList>
+</Authorized>
+</AuthorizeView>

@@ -1,0 +1,131 @@
+﻿@page "/group/{Id}"
+@using LetItGrow.UI.Common
+@using LetItGrow.UI.Node.Extensions
+@using LetItGrow.UI.Node.Services
+@using Plotly.Blazor
+@using Plotly.Blazor.LayoutLib
+@using Title = Microsoft.AspNetCore.Components.Web.Extensions.Head.Title;
+@inherits ReactiveComponentBase<GroupViewModel>
+@inject IGroupService groupService
+@inject INodeService nodeService
+
+@if (VM.Loading)
+{
+    <Title Value="@($"LetItGrow Group - {Id}")"></Title>
+    <div class="w-full h-full flex items-center justify-center">
+        <Loading />
+    </div>
+}
+else
+{
+    <Title Value="@($"LetItGrow Group - {VM.Group.Name}")"></Title>
+
+    <div class="pl-2 h-full overflow-y-auto overflow-x-hidden flex flex-col">
+        <div class="flex justify-between">
+            @{ const string btnCss = "text-gray-100 text-xs px-3 py-2 w-30"; }
+
+            <h2 class="my-1">@VM.Group.Name (@VM.Group.Type)</h2>
+
+            <div>
+                <button class="btn-update @btnCss" @onclick="() => updateDialog.Show()">
+                    <i class="bi bi-exclamation-circle"></i> Update
+                </button>
+                <button class="btn-cancel @btnCss" @onclick="() => deleteDialog.Show()">
+                        <i class="bi bi-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+        
+        <hr class="m-2" />
+
+        <p class="my-0">@(VM.Group.Description ?? "No Description")</p>
+        
+        <hr class="m-2" />
+        
+        <p class="text-xs font-mono mt-1 mb-0">Created by '@VM.Group.CreatedBy': '@VM.Group.CreatedAt.LocalDateTime.ToString("g")'</p>
+        <p class="text-xs font-mono mt-0 mb-1">Updated by '@VM.Group.UpdatedBy': '@VM.Group.UpdatedAt.LocalDateTime.ToString("g")'</p>
+        
+        <hr class="m-2" />
+
+        <div class="h-10 flex gap-2 justify-center overflow-x-auto" style="min-height: 40px">
+        @if (VM.Nodes is null)
+        {
+            <Loading Class="h-10 flex justify-center" />
+        }
+        else
+        {
+            <Virtualize Context="node" Items="VM.Nodes">
+                <a class="px-4 py-2 border bg-alt rounded-xl" href="/node/@node.Id">@node.Name</a>
+            </Virtualize>
+        }
+        </div>
+
+        <hr class="m-2" />
+
+        <div class="p-2 flex items-center justify-center">
+            <SpinnerButton Command="VM.LoadNodeData">
+                Load Data
+            </SpinnerButton>
+
+            <select class="w-auto" @bind="VM.SearchOptions.Days">
+                @foreach(var o in SearchOptions.All)
+                {
+                    <option value="@o.Days">@o</option>
+                }
+            </select>
+        </div>
+
+        @if (VM.NodeData is not null)
+        {
+            <h2 class="my-0 text-center">Measurements</h2>
+            <PlotlyChart style="min-height: 500px; width: 100%" @ref="measureChart"
+                Config="new() { Responsive = true }"
+                Layout="new() { HoverMode = HoverModeEnum.Closest }" />
+
+            <hr class="m-2" />
+
+            <h2 class="my-0 text-center">Irrigations</h2>
+            <PlotlyChart style="min-height: 500px; width: 100%" @ref="irrigateChart"
+                Config="new() { Responsive = true }"
+                Layout="new() { HoverMode = HoverModeEnum.Closest }" />
+        }
+    </div>
+
+    <Dialog @ref="updateDialog" Class="w-11/12 lg:w-1/3">
+        <UpdateGroupForm Group="VM.Group" OnCancelClick="() => updateDialog.Hide()" />
+    </Dialog>
+    
+    <Dialog @ref="deleteDialog" Class="w-11/12 lg:w-1/3">
+        <DeleteGroupForm Group="VM.Group" OnCancelClick="() => deleteDialog.Hide()" />
+    </Dialog>
+}
+
+@code{
+    private Dialog updateDialog = null!;
+    private Dialog deleteDialog = null!;
+    private PlotlyChart irrigateChart = null!;
+    private PlotlyChart measureChart = null!;
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    public GroupViewModel VM { get => ViewModel!; set => ViewModel = value; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        VM = new(Id, groupService, nodeService);
+        VM.Activator.Activate();
+
+        VM.WhenAnyValue(x => x.NodeData)
+            .WhereNotNull()
+            .Subscribe(d =>
+            {
+                irrigateChart.Data = d!.Value.irrigations.ToTraceList();
+                measureChart.Data = d!.Value.measurements.ToTraceList();
+
+                Observable.FromAsync(measureChart.React).Subscribe(_ => StateHasChanged());
+                Observable.FromAsync(irrigateChart.React).Subscribe(_ => StateHasChanged());
+            });
+    }
+}

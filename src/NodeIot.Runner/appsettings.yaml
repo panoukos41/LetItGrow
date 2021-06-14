@@ -1,0 +1,20 @@
+﻿# Node Mandatory Settings.
+
+Type: <The type of the node. "Measurement" or "Irrigation">
+ClientId: <The id of the node>
+Token: <Token that will be send to the server>
+Server: <Url to the server that this node should connect>
+Certificate: <Path to certificate>
+
+# Most connections include an `Led` paramter. 
+# This is the led to indicate the device is being used
+
+# - General Connections
+Led : { Power: 05, Connection: 06 } # Working Led
+
+# - Measurement Connections
+Dht : { Pin: 10, Led: 13, Version: 11 } # Dht sensor (11, 12, 21, 22)
+Soil: { Pin: 10, Led: 19 } # Soil sensor
+
+# - Irrigation Connections
+Pump: { Pin: 10, Led: 26 } # Pump actuator

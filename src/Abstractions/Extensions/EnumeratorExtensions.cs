@@ -1,6 +1,6 @@
 ﻿namespace System.Collections.Generic
 {
-    public static class EnumeratorExtensions
+    public static partial class EnumeratorExtensions
     {
         public static IEnumerator<T> GetEnumerator<T>(this IEnumerator<T> enumerator) => enumerator;
 
