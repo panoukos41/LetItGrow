@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MQTTnet.AspNetCore;
 using MQTTnet.AspNetCore.AttributeRouting;
 using MQTTnet.AspNetCore.Extensions;
@@ -26,10 +27,8 @@ await new HostBuilder()
     services.AddMicroserviceInfrastructure(configuration);
 
     // Add custom services
-    //services.AddSingleton<NodeAuthChangesWorker>();
     services.AddSingleton<MqttServerConnectionHandler>();
 
-    //services.AddSingleton<INodeTokenAuthenticator>(s => s.GetRequiredService<NodeAuthChangesWorker>());
     services.AddSingleton<INodeTokenAuthenticator, NodeAuthenticationHandler>();
     services.AddSingleton<INodeConnections, MqttServerConnectionHandler>();
     services.AddSingleton<IMqttServerClientConnectedHandler>(s => s.GetRequiredService<MqttServerConnectionHandler>());
@@ -46,8 +45,8 @@ await new HostBuilder()
     services.AddHostedMqttServerWithServices(b =>
     {
         b.WithoutDefaultEndpoint();
-        b.WithConnectionValidator(b.GetRequiredService<IMqttServerConnectionValidator>());
         b.WithStorage(b.GetRequiredService<IMqttServerStorage>());
+        b.WithConnectionValidator(b.GetRequiredService<IMqttServerConnectionValidator>());
         b.WithAttributeRouting();
     });
 
@@ -57,7 +56,6 @@ await new HostBuilder()
     services.AddControllers();
 
     // Add Worker services
-    //services.AddHostedService(s => s.GetRequiredService<NodeAuthChangesWorker>());
     services.AddHostedService<CouchDbNodeChangesWorker>();
     services.AddHostedService<CouchDbIrrigationChangesWorker>();
 })

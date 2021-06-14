@@ -17,80 +17,76 @@ namespace LetItGrow.Microservice.NotificationHandlers
     {
         private readonly INodeStore store;
         private readonly IMemoryCache cache;
+        private readonly IPublisher publisher;
 
-        public NodeAuthenticationHandler(INodeStore store, IMemoryCache cache)
+        public NodeAuthenticationHandler(INodeStore store, IMemoryCache cache, IPublisher publisher)
         {
             this.store = store;
             this.cache = cache;
+            this.publisher = publisher;
         }
-
-        private record Auth(int Rev, string Token);
 
         public Task Handle(NodeDeleted notification, CancellationToken cancellationToken)
         {
-            var auth = FindAuth(notification.NodeId);
+            var token = FindToken(notification.NodeId);
 
-            if (auth is { } && auth.Rev <= GetRev(notification.Rev))
+            if (token is { })
             {
-                RemoveAuth(notification.NodeId);
+                RemoveToken(notification.NodeId);
             }
+
+            publisher.PublishAndForget(new DisconnectNode(notification.NodeId));
 
             return Task.CompletedTask;
         }
 
         public Task Handle(NodeTokenChanged notification, CancellationToken cancellationToken)
         {
-            var rev = GetRev(notification.Rev);
             var nodeId = notification.NodeId;
-            var auth = FindAuth(nodeId);
+            var token = FindToken(nodeId);
 
-            if (auth is null)
+            if (token is null)
             {
-                SetAuth(nodeId, new Auth(rev, notification.Token));
+                SetToken(nodeId, notification.Token);
             }
-            else if (auth.Rev < rev)
+            else if (token != notification.Token)
             {
-                SetAuth(nodeId, auth with
-                {
-                    Rev = rev,
-                    Token = notification.Token
-                });
+                SetToken(nodeId, notification.Token);
+                publisher.PublishAndForget(new DisconnectNode(nodeId));
             }
+
             return Task.CompletedTask;
         }
 
         public async ValueTask<bool> Authenticate(string nodeId, string token)
         {
-            if (FindAuth(nodeId) is { } auth)
+            if (FindToken(nodeId) is { } storedToken)
             {
-                return auth.Token == token;
+                return storedToken == token;
             }
 
             var node = await store.Find(nodeId, default);
             if (node is not null)
             {
-                SetAuth(nodeId, new Auth(GetRev(node.ConcurrencyStamp), token));
+                SetToken(nodeId, token);
 
                 return node.Token == token;
             }
 
-            SetAuth(nodeId, new Auth(1, token));
+            SetToken(nodeId, token);
             return false;
         }
 
-        private Auth? FindAuth(string nodeId) =>
-            cache.Get<Auth>($"node-auth:{nodeId}") is { } auth ? auth : null;
+        private string? FindToken(string nodeId) =>
+            cache.Get<string>($"node-auth:{nodeId}") is { } token ? token : null;
 
-        private void SetAuth(string nodeId, Auth auth, TimeSpan? expiration = null) =>
-            cache.Set($"node-auth:{nodeId}", auth, new MemoryCacheEntryOptions
+        private void SetToken(string nodeId, string token, TimeSpan? expiration = null) =>
+            cache.Set($"node-auth:{nodeId}", token, new MemoryCacheEntryOptions
             {
                 SlidingExpiration = expiration ?? TimeSpan.FromMinutes(30)
             });
 
-        private void RemoveAuth(string nodeId) =>
+        private void RemoveToken(string nodeId) =>
             cache.Remove($"node-auth:{nodeId}");
-
-        private static int GetRev(string rev) =>
-            int.Parse(rev.Split('-')[0]);
     }
 }
