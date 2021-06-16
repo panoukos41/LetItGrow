@@ -12,8 +12,6 @@ namespace LetItGrow.UI.Common.Services
 {
     public class HubService
     {
-        private bool started;
-
         private HubConnection Hub { get; }
 
         public HubConnectionState State => Hub.State;
@@ -55,17 +53,13 @@ namespace LetItGrow.UI.Common.Services
 
         public async Task ConnectAsync(CancellationToken token = default)
         {
-            // todo: imporve hub connect as in the docs
-            // https://docs.microsoft.com/en-us/aspnet/core/signalr/dotnet-client?view=aspnetcore-5.0&tabs=visual-studio#handle-lost-connection
-
-            if (started) return;
+            if (Hub.State != HubConnectionState.Disconnected) return;
 
             Events.Publish(HubConnectionState.Connecting);
 
             await Hub.StartAsync(token);
 
             Events.Publish(HubConnectionState.Connected);
-            started = true;
         }
 
         public void On<T1>(string methodName, Action<T1> handler) =>
@@ -73,13 +67,10 @@ namespace LetItGrow.UI.Common.Services
 
         public async Task<Result<TResponse>> SendAsync<TResponse>(string methodName, IRequest<TResponse> request, CancellationToken token = default)
         {
-            while (!started) await Task.Delay(500, token);
+            while (Hub.State != HubConnectionState.Connected) await Task.Delay(500, token);
 
             try
             {
-                if (Hub.State is not HubConnectionState.Connected)
-                    return Errors.ServiceUnavailable;
-
                 await Task.Delay(1000, token);
 
                 return await Hub.InvokeAsync<TResponse>(methodName, request, token);

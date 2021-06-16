@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
 
     <!-- Disable certain warnings -->
-    <NoWarn>CS1591;</NoWarn>
+    <NoWarn>CS1591;BL0005;RXRA001</NoWarn>
     
     <!-- If no Configuration is provided we default to debug -->
     <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
