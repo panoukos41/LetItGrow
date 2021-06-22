@@ -57,7 +57,7 @@ namespace LetItGrow.Microservice.Workers
             {
                 if (change.Deleted || !RevIsOne(change.Document.Rev)) continue;
 
-                var key = $"irrigation-hash:{change.Document.Rev.GetHashCode()}";
+                var key = $"irrigation-hash:{change.Document.Id}";
 
                 if (cache.TryGetValue(key, out _)) continue;
 

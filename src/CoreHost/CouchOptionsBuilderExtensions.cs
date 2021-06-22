@@ -19,7 +19,8 @@ namespace CouchDB.Driver
             var values = configuration.GetService("couchdb").Split(';');
 
             if (values.Length < 3) throw new ArgumentException(
-                $"Invalid configuration value. The connection string needs to be at least 3 values seperated by ';' you provided {values.Length}");
+                $"Invalid configuration value. The connection string needs to be" +
+                $"at least 3 values seperated by ';' you provided {values.Length}");
 
             var username = values[0];
             var password = values[1];

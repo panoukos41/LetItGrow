@@ -72,8 +72,6 @@ namespace LetItGrow.Microservice.NotificationHandlers
 
                 return node.Token == token;
             }
-
-            SetToken(nodeId, token);
             return false;
         }
 

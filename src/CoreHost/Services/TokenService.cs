@@ -22,13 +22,16 @@ namespace LetItGrow.CoreHost.Services
         /// <returns>A string for use as a token.</returns>
         public static string Create(int length)
         {
-            var token = ArrayPool<char>.Shared.Rent(length);
+            var tokenPool = ArrayPool<char>.Shared.Rent(length);
             for (int i = 0; i < length; i++)
             {
                 var charIndex = RandomNumberGenerator.GetInt32(0, TokenChars.Length);
-                token[i] = TokenChars[charIndex];
+                tokenPool[i] = TokenChars[charIndex];
             }
-            return new string(token[..length]);
+            
+            var token = new string(tokenPool[..length]);
+            ArrayPool<char>.Shared.Return(tokenPool);
+            return token;
         }
 
         #endregion
