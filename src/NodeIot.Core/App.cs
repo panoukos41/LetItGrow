@@ -72,7 +72,9 @@ namespace LetItGrow.NodeIot
                     // Make configuration available to the app through static class.
                     Config.Configuration = c.Configuration;
 
-                    services.AddSingleton<GpioController>();
+                    if (!Config.Test)
+                        services.AddSingleton<GpioController>();
+
                     services.AddMqtt();
 
                     switch (Config.Type)
@@ -109,12 +111,15 @@ namespace LetItGrow.NodeIot
         /// <remarks>If you only need the services and the config you don't have to use this method.</remarks>
         public async Task<int> RunAsync(CancellationToken token = default)
         {
-            var power = new Pin(Config.Led.Power, host.GetRequiredService<GpioController>());
-            power.Open(PinMode.Output);
+            if (!Config.Test)
+            {
+                var power = new Pin(Config.Led.Power, host.GetRequiredService<GpioController>());
+                power.Open(PinMode.Output);
+                power.Value = PinValue.High;
+            }
             try
             {
                 Log.Information("Node '{type}' with Id '{id}' is starting.", Config.Type, Config.ClientId);
-                power.Value = PinValue.High;
                 await host.RunAsync(token);
                 return 0;
             }

@@ -4,7 +4,6 @@ using MQTTnet.Extensions.External.RxMQTT.Client;
 using MQTTnet.Extensions.ManagedClient;
 using Serilog;
 using System;
-using System.Device.Gpio;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
@@ -17,17 +16,15 @@ namespace LetItGrow.NodeIot.Workers
         private readonly IRxMqttClient _client;
         private readonly IManagedMqttClientOptions _options;
 
-        public MqttWorker(IRxMqttClient client, IManagedMqttClientOptions options, GpioController gpio)
+        public MqttWorker(IRxMqttClient client, IManagedMqttClientOptions options)
         {
             _client = client;
             _options = options;
-            connectionPin = new Pin(Config.Led.Connection, gpio);
-            connectionPin.Open(PinMode.Output);
         }
 
         protected string Id { get; } = "MqttClient";
 
-        protected readonly Pin connectionPin;
+        protected readonly Pin connectionPin = null!;
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -38,7 +35,6 @@ namespace LetItGrow.NodeIot.Workers
                 .Subscribe(state =>
                 {
                     Log.Information("'{Id}' connection state '{state}'", Id, state);
-                    connectionPin.Value = !state;
                 });
             await _client.StartAsync(_options);
         }

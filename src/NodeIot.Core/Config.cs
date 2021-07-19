@@ -63,7 +63,7 @@ namespace LetItGrow.NodeIot
         private static string GetNodeType()
         {
             var types = new[] { "irrigation", "measurement" };
-            var type = Get<string>("dht:version").ToLowerInvariant();
+            var type = Get<string>("type").ToLowerInvariant();
             if (types.Contains(type) is false)
             {
                 throw new ArgumentException(
