@@ -1,6 +1,6 @@
 ﻿using LetItGrow.NodeIot.Common;
-using LetItGrow.NodeIot.Workers;
 using LetItGrow.NodeIot.Services;
+using LetItGrow.NodeIot.Workers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -78,12 +78,18 @@ namespace LetItGrow.NodeIot
                     switch (Config.Type)
                     {
                         case "irrigation":
-                            services.AddSingleton<IIrrigationService, IrrigationService>();
+                            if (Config.Test)
+                                services.AddSingleton<IIrrigationService, GpioIrrigationService>();
+                            else
+                                services.AddSingleton<IIrrigationService, GpioIrrigationService>();
                             services.AddHostedService<IrrigationWorker>();
                             break;
 
                         case "measurement":
-                            services.AddSingleton<IMeasurementService, MeasurementService>();
+                            if (Config.Test)
+                                services.AddSingleton<IMeasurementService, TestMeasurementService>();
+                            else
+                                services.AddSingleton<IMeasurementService, GpioMeasurementService>();
                             services.AddHostedService<MeasurementWorker>();
                             break;
                     }

@@ -4,9 +4,9 @@ using System.Device.Gpio;
 
 namespace LetItGrow.NodeIot.Services
 {
-    public sealed class IrrigationService : IIrrigationService, IDisposable
+    public sealed class GpioIrrigationService : IIrrigationService, IDisposable
     {
-        public IrrigationService(GpioController gpio)
+        public GpioIrrigationService(GpioController gpio)
         {
             RelayPin = new Pin(Config.Pump.Pin, gpio);
             RelayPin.Open();

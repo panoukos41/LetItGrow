@@ -6,9 +6,9 @@ using System.Threading;
 
 namespace LetItGrow.NodeIot.Services
 {
-    public sealed class MeasurementService : IMeasurementService, IDisposable
+    public sealed class GpioMeasurementService : IMeasurementService, IDisposable
     {
-        public MeasurementService(GpioController gpio)
+        public GpioMeasurementService(GpioController gpio)
         {
             int pin = Config.Dht.Pin;
             DhtPin = new Pin(pin, gpio);
@@ -32,7 +32,7 @@ namespace LetItGrow.NodeIot.Services
             double humidity;
             double moisture;
 
-            while(true)
+            while (true)
             {
                 if (Dht.TryMeasure(out var measurement))
                 {

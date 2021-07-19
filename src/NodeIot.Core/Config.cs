@@ -18,6 +18,7 @@ namespace LetItGrow.NodeIot
         private static string? server;
         private static string? certificate;
         private static string? type;
+        private static bool? test;
 
         /// <summary>
         ///
@@ -53,6 +54,11 @@ namespace LetItGrow.NodeIot
         /// The Type of this node from the configuration.
         /// </summary>
         public static string Type => type ??= GetNodeType();
+
+        /// <summary>
+        /// Wheter we are in test mode or not.
+        /// </summary>
+        public static bool Test => test ??= Exists("test");
 
         private static string GetNodeType()
         {
@@ -186,6 +192,16 @@ namespace LetItGrow.NodeIot
                 _ => Configuration.GetValue<T>(key) ?? throw new ArgumentException(
                     $"Invalid value '{value}' for key '{key}'", nameof(key))
             };
+        }
+
+        /// <summary>
+        /// See if a key exists or not.
+        /// </summary>
+        /// <param name="key">The key to search for.</param>
+        /// <returns><see langword="true"/> if it exists, <see langword="false"/> otherwise.</returns>
+        public static bool Exists(string key)
+        {
+            return Configuration[key] is { };
         }
 
         #endregion
