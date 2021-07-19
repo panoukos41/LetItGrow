@@ -79,7 +79,7 @@ namespace LetItGrow.NodeIot
                     {
                         case "irrigation":
                             if (Config.Test)
-                                services.AddSingleton<IIrrigationService, GpioIrrigationService>();
+                                services.AddSingleton<IIrrigationService, TestIrrigationService>();
                             else
                                 services.AddSingleton<IIrrigationService, GpioIrrigationService>();
                             services.AddHostedService<IrrigationWorker>();
