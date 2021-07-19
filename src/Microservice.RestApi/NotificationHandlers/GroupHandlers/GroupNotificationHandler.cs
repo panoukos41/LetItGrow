@@ -45,7 +45,7 @@ namespace LetItGrow.Microservice.RestApi.NotificationHandlers.GroupHandlers
 
         public Task Handle(GroupDeleted notification, CancellationToken cancellationToken)
         {
-            return ShouldSend($"group:create:{notification.GroupId}", notification.Rev)
+            return ShouldSend($"group:delete:{notification.GroupId}", notification.Rev)
                 ? hub.Clients.All.SendAsync("group:removed", notification, cancellationToken)
                 : Task.CompletedTask;
         }

@@ -16,9 +16,4 @@
     <PackageReference Include="ReactiveUI" Version="13.3.2" />
     <PackageReference Include="ReactiveUI.Fody" Version="13.3.2" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Irrigation\ViewModels\" />
-    <Folder Include="Measurement\ViewModels\" />
-  </ItemGroup>
 </Project>

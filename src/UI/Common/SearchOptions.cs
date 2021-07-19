@@ -4,8 +4,6 @@
     {
         public int Days { get; set; }
 
-        public SearchOptions(int days = 3) => Days = days;
-
         public static SearchOptions ThreeDays => new(3);
 
         public static SearchOptions FiveDays => new(5);
@@ -13,6 +11,11 @@
         public static SearchOptions OneWeek => new(7);
 
         public static SearchOptions OneMonth => new(30);
+
+        private SearchOptions(int days = 3)
+        {
+            Days = days;
+        }
 
 #pragma warning disable CA2211 // Non-constant fields should not be visible
 

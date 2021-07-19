@@ -75,10 +75,6 @@ namespace LetItGrow.NodeIot
                     services.AddSingleton<GpioController>();
                     services.AddMqtt();
 
-                    //services.AddHostedService<Test1Worker>();
-                    //services.AddHostedService<Test2Worker>();
-                    //services.AddHostedService<Test3Worker>();
-
                     switch (Config.Type)
                     {
                         case "irrigation":

@@ -28,7 +28,7 @@ namespace LetItGrow.UI.Common.Services
             Hub.Closed += async (arg) =>
             {
                 await Task.Delay(5000);
-                await Hub.StartAsync();
+                await ConnectAsync();
             };
 
             WhenDisconnected = Observable.FromEvent<Func<Exception, Task>, Exception>(

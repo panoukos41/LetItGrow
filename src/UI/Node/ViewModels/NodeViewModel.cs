@@ -37,7 +37,7 @@ namespace LetItGrow.UI.Node.ViewModels
         {
             Loading = true;
             Node = null!;
-            SearchOptions = new();
+            SearchOptions = SearchOptions.ThreeDays;
 
             RefreshToken = ReactiveCommand.CreateFromTask(() =>
                 nodeService.Refresh(new RefreshToken(Node)));

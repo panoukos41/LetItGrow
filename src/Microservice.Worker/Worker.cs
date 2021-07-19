@@ -41,7 +41,7 @@ namespace Microservice.Worker
             this.irrigationStore = irrigationStore;
             this.measurementStore = measurementStore;
             this.cache = cache;
-            var period = configuration.GetValue("period", 30);
+            var period = configuration.GetValue("period", 15);
             interval = Observable.Interval(TimeSpan.FromMinutes(period));
             logger.LogInformation("Period set to '{period}'", period);
         }

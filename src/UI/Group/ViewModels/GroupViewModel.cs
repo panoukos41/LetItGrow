@@ -41,7 +41,7 @@ namespace LetItGrow.UI.Group.ViewModels
         {
             Loading = true;
             Group = null!;
-            SearchOptions = new();
+            SearchOptions = SearchOptions.ThreeDays;
 
             LoadNodes = ReactiveCommand.CreateFromTask(async () =>
                 await nodeService.Search(new() { GroupId = Group.Id }).SwitchAsync(
