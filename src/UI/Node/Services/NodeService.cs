@@ -56,8 +56,11 @@ namespace LetItGrow.UI.Node.Services
 
         /// <inheritdoc/>
 
-        private void NodeAdded(NodeCreated notification) =>
+        private void NodeAdded(NodeCreated notification)
+        {
+            Console.WriteLine("Node Added");
             _nodes.AddOrUpdate(notification.Node);
+        }
 
         private void NodeUpdated(NodeUpdated notification) =>
             _nodes.AddOrUpdate(notification.Node);

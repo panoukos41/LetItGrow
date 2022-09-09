@@ -68,10 +68,6 @@ namespace LetItGrow.NodeIot.Workers
             token: stop,
             onNext: irrigation =>
             {
-                //if (irrigation.IssuedAt - SystemClock.Instance.GetCurrentInstant() < Duration.FromHours(1)) return;
-
-                // todo: Use settings to check the last known irrigation,
-                // in case you can't connect then stop irrigating.
                 if (irrigation is { Type: IrrigationType.Start })
                 {
                     _irrigations.Set(true);
@@ -87,15 +83,6 @@ namespace LetItGrow.NodeIot.Workers
         protected override Task WorkAsync(CancellationToken stop)
         {
             return Task.Delay(Timeout.Infinite, stop).Ignore();
-
-            //DateTimeOffset start = DateTimeOffset.Now;
-            //DateTimeOffset finish = start.AddSeconds(Settings.PollInterval);
-
-            //await Task.Delay(finish.Subtract(start), stop).Ignore().ConfigureAwait(false);
-
-            //if (stop.IsCancellationRequested) return;
-
-            //Measure();
         }
     }
 }

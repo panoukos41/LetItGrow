@@ -33,7 +33,7 @@ namespace LetItGrow.Microservice.RestApi.NotificationHandlers.NodeHandlers
 
         public Task Handle(NodeCreated notification, CancellationToken cancellationToken)
         {
-            return ShouldSend($"node:create:{notification.Node.Id}", notification.Node.ConcurrencyStamp)
+            return ShouldSend($"node:added:{notification.Node.Id}", notification.Node.ConcurrencyStamp)
                 ? hub.Clients.All.SendAsync("node:added", notification, cancellationToken)
                 : Task.CompletedTask;
         }

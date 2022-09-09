@@ -31,7 +31,7 @@ namespace LetItGrow.Microservice.RestApi.NotificationHandlers.GroupHandlers
 
         public Task Handle(GroupCreated notification, CancellationToken cancellationToken)
         {
-            return ShouldSend($"group:create:{notification.Group.Id}", notification.Group.ConcurrencyStamp)
+            return ShouldSend($"group:added:{notification.Group.Id}", notification.Group.ConcurrencyStamp)
                 ? hub.Clients.All.SendAsync("group:added", notification, cancellationToken)
                 : Task.CompletedTask;
         }

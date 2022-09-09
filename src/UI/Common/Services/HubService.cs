@@ -62,7 +62,7 @@ namespace LetItGrow.UI.Common.Services
             Events.Publish(HubConnectionState.Connected);
         }
 
-        public void On<T1>(string methodName, Action<T1> handler) =>
+        public IDisposable On<T1>(string methodName, Action<T1> handler) =>
             Hub.On(methodName, handler);
 
         public async Task<Result<TResponse>> SendAsync<TResponse>(string methodName, IRequest<TResponse> request, CancellationToken token = default)

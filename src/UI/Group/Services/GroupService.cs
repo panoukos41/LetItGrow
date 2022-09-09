@@ -6,6 +6,7 @@ using LetItGrow.Microservice.Group.Notifications;
 using LetItGrow.Microservice.Group.Requests;
 using LetItGrow.UI.Common.Services;
 using MediatR;
+using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,10 +22,10 @@ namespace LetItGrow.UI.Group.Services
 
         public GroupService(HubService hub)
         {
-            hub.On<GroupCreated>("group:added", GroupAdded);
-            hub.On<GroupUpdated>("group:updated", GroupUpdated);
-            hub.On<GroupDeleted>("group:removed", GroupRemoved);
             this.hub = hub;
+            this.hub.On<GroupCreated>("group:added", GroupAdded);
+            this.hub.On<GroupUpdated>("group:updated", GroupUpdated);
+            this.hub.On<GroupDeleted>("group:removed", GroupRemoved);
         }
 
         /// <inheritdoc/>
@@ -37,8 +38,11 @@ namespace LetItGrow.UI.Group.Services
             }
         }
 
-        private void GroupAdded(GroupCreated notification) =>
+        private void GroupAdded(GroupCreated notification)
+        {
+            Console.WriteLine("Group Added");
             _groups.AddOrUpdate(notification.Group);
+        }
 
         private void GroupUpdated(GroupUpdated notification) =>
             _groups.AddOrUpdate(notification.Group);
